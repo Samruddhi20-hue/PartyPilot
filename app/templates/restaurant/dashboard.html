@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Partner Dashboard | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="restaurant-dashboard">
+    <div class="restaurant-welcome"><div><span class="eyebrow">PARTNER WORKSPACE</span><h1>Welcome, <span>{{ profile.business_name if profile else current_user.full_name }}.</span></h1><p>Manage your venue listings, event requests and availability.</p></div><a href="{{ url_for('restaurant.add_venue') }}" class="btn btn-primary">+ Add new venue</a></div>
+    {% if profile and profile.verification_status != 'approved' %}
+    <div class="partner-notice"><strong>Verification: {{ profile.verification_status|title }}</strong><p>Your restaurant must be approved before its venues can be published publicly.</p></div>
+    {% endif %}
+    <div class="restaurant-stats">
+        <div><small>Total venues</small><strong>{{ total_venues }}</strong></div>
+        <div><small>Total bookings</small><strong>{{ total_bookings }}</strong></div>
+        <div><small>Pending requests</small><strong>{{ pending_bookings }}</strong></div>
+        <div><small>Confirmed</small><strong>{{ confirmed_bookings }}</strong></div>
+    </div>
+    <section class="partner-card"><div class="partner-card-heading"><div><h2>Recent booking requests</h2><p>Latest activity across your venues</p></div><a href="{{ url_for('restaurant.booking_requests') }}">View all ↗</a></div>
+        <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Reference</th><th>Customer</th><th>Venue</th><th>Event date</th><th>Guests</th><th>Status</th><th></th></tr></thead><tbody>
+        {% for booking in recent_bookings %}<tr><td>{{ booking.booking_reference }}</td><td>{{ booking.customer.full_name }}</td><td>{{ booking.venue.name }}</td><td>{{ booking.event_date.strftime('%d %b %Y') }}</td><td>{{ booking.guest_count }}</td><td>{{ booking.status|title }}</td><td><a href="{{ url_for('restaurant.booking_details', booking_id=booking.id) }}">Review ↗</a></td></tr>
+        {% else %}<tr><td colspan="7">No booking requests yet.</td></tr>{% endfor %}
+        </tbody></table></div>
+    </section>
+    <div class="partner-quick-links">
+        <a href="{{ url_for('restaurant.venues') }}">🏢 My venues ↗</a>
+        <a href="{{ url_for('restaurant.menus') }}">🍽️ Menus ↗</a>
+        <a href="{{ url_for('restaurant.packages') }}">✨ Packages ↗</a>
+        <a href="{{ url_for('restaurant.availability') }}">📆 Availability ↗</a>
+        <a href="{{ url_for('restaurant.settings') }}">⚙️ Settings ↗</a>
+        <a href="{{ url_for('restaurant.upcoming_events') }}">📅 Upcoming events ↗</a>
+    </div>
+</section>
+{% endblock %}

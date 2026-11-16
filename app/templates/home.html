@@ -1,0 +1,106 @@
+
+{% extends 'base.html' %}
+
+{% block title %}PartyPilot | Find Your Perfect Event Venue{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+    <div class="hero-content">
+        <span class="eyebrow">✦ THE NEW WAY TO PLAN EVENTS</span>
+
+        <h1>Big plans.<br>
+            <span>Perfect places.</span>
+        </h1>
+
+        <p>
+            From team parties to corporate celebrations,
+            discover venues that match your vibe and budget.
+        </p>
+
+        <div class="hero-buttons">
+            <a href="{{ url_for('venues.explore') }}" class="btn btn-primary">Explore Venues ↗</a>
+            <a href="{{ url_for('venues.restaurant_landing') }}" class="btn btn-outline">List Your Restaurant</a>
+        </div>
+
+    </div>
+
+    <div class="hero-image">
+        <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1000"
+             alt="Beautiful event venue">
+        <div class="floating-card">
+            <span>✦ Your next event</span>
+            <strong>Starts right here.</strong>
+        </div>
+    </div>
+</section>
+
+<section class="search-section">
+    <div>
+        <small>WHERE'S THE PARTY?</small>
+        <h3>Find your perfect venue</h3>
+    </div>
+
+    <form action="{{ url_for('venues.explore') }}" method="GET" class="search-bar">
+        <input type="text" name="location" placeholder="📍 Enter city or location">
+        <select name="venue_type">
+            <option value="">Event type</option>
+            <option>Restaurant</option>
+            <option>Private Dining</option>
+            <option>Banquet Hall</option>
+            <option>Rooftop</option>
+            <option>Outdoor Space</option>
+            <option>Lounge</option>
+        </select>
+        <input type="number" name="guests" placeholder="👥 Guests" min="1">
+        <button class="btn btn-primary" type="submit">Find Venues ↗</button>
+    </form>
+</section>
+
+<section class="categories section">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">FIND YOUR VIBE</span>
+            <h2>What kind of venue are you looking for?</h2>
+        </div>
+        <a href="{{ url_for('venues.explore') }}">View all ↗</a>
+    </div>
+
+    <div class="category-grid">
+        <a href="{{ url_for('venues.explore', venue_type='Restaurant') }}" class="category-card">
+            <span>🎉</span>
+            <h3>Restaurants</h3>
+            <p>Flexible spaces for team events.</p>
+        </a>
+
+        <a href="{{ url_for('venues.explore', venue_type='Private Dining') }}" class="category-card">
+            <span>🍽️</span>
+            <h3>Private Dining</h3>
+            <p>Intimate spaces for your team.</p>
+        </a>
+
+        <a href="{{ url_for('venues.explore', venue_type='Outdoor Space') }}" class="category-card">
+            <span>🌴</span>
+            <h3>Outdoor Spaces</h3>
+            <p>Open-air settings for gatherings.</p>
+        </a>
+
+        <a href="{{ url_for('venues.explore', venue_type='Banquet Hall') }}" class="category-card">
+            <span>🥂</span>
+            <h3>Banquet Halls</h3>
+            <p>Room for larger celebrations.</p>
+        </a>
+    </div>
+</section>
+
+<section class="partner-banner">
+    <div>
+        <span class="eyebrow">GROW WITH PARTYPILOT</span>
+        <h2>Your restaurant.<br>More possibilities.</h2>
+        <p>Showcase your venue, manage bookings and reach new corporate customers.</p>
+        <a href="{{ url_for('auth.restaurant_register') }}" class="btn btn-accent">Become a Partner ↗</a>
+    </div>
+    <div class="partner-emoji">🍸 ✨</div>
+</section>
+
+{% endblock %}

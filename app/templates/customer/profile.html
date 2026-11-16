@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}My Profile | PartyPilot{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="customer-dashboard-page">
+    <div class="dashboard-welcome">
+        <div>
+            <span class="eyebrow">YOUR ACCOUNT</span>
+            <h1>My profile<span>.</span></h1>
+            <p>Manage your personal and contact information.</p>
+        </div>
+        <a href="{{ url_for('customer.dashboard') }}" class="btn btn-outline">← Dashboard</a>
+    </div>
+
+    <form class="profile-form" action="{{ url_for('customer.profile') }}" method="POST">
+        <div class="profile-form-header">
+            <div class="profile-avatar profile-avatar-large">{{ current_user.full_name[:1]|upper }}</div>
+            <div><h2>Personal information</h2><p>Keep your details up to date.</p></div>
+        </div>
+
+        <div class="form-grid">
+            <div class="form-field">
+                <label for="profileName">Full name</label>
+                <input id="profileName" name="full_name" type="text" value="{{ current_user.full_name }}" required>
+            </div>
+            <div class="form-field">
+                <label for="profileEmail">Email address</label>
+                <input id="profileEmail" name="email" type="email" value="{{ current_user.email }}" required>
+            </div>
+            <div class="form-field">
+                <label for="profilePhone">Phone number</label>
+                <input id="profilePhone" name="phone" type="tel" value="{{ current_user.phone or '' }}" pattern="[6-9][0-9]{9}">
+            </div>
+            <div class="form-field">
+                <label for="profileCompany">Company name</label>
+                <input id="profileCompany" name="company" type="text" placeholder="Your company">
+            </div>
+            <div class="form-field">
+                <label for="profileCity">City</label>
+                <input id="profileCity" name="city" type="text" placeholder="Your city">
+            </div>
+        </div>
+
+        <div class="profile-form-footer">
+            <p>Your name, email and phone number will be saved to your customer account.</p>
+            <button type="submit" class="btn btn-primary">Save changes ↗</button>
+        </div>
+    </form>
+
+    <div class="profile-form security-card">
+        <h2>Account security</h2>
+        <p>Keep your account secure by updating your password regularly.</p>
+        <a href="{{ url_for('auth.forgot_password') }}" class="btn btn-outline">Reset password</a>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container" id="flashContainer" aria-live="polite">
+        {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">
+            <span>{{ message }}</span>
+            <button type="button" class="flash-close" aria-label="Dismiss message">
+                &times;
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+<style>
+.flash-container {
+    width: min(92%, 900px);
+    margin: 15px auto;
+}
+
+.flash-message {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #eef2ff;
+    color: #27356b;
+    border: 1px solid #dbe3ff;
+}
+
+.flash-success {
+    background: #ecfdf3;
+    color: #176b3a;
+    border-color: #b7ebca;
+}
+
+.flash-error,
+.flash-danger {
+    background: #fff0f0;
+    color: #a52828;
+    border-color: #f3c4c4;
+}
+
+.flash-warning {
+    background: #fff8e7;
+    color: #805b0a;
+    border-color: #f2dfaa;
+}
+
+.flash-close {
+    border: 0;
+    background: transparent;
+    font-size: 22px;
+    cursor: pointer;
+    color: inherit;
+}
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".flash-close").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const message = button.closest(".flash-message");
+            if (message) message.remove();
+        });
+    });
+});
+</script>

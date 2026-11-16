@@ -1,0 +1,36 @@
+{% extends 'admin/base.html' %}
+{% block title %}Dashboard | PartyPilot Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading"><div><span class="admin-eyebrow">OVERVIEW</span><h1>Dashboard</h1><p>Current activity across PartyPilot.</p></div><span class="admin-date">{{ now().strftime('%d %B %Y') if now is defined else 'Live overview' }}</span></div>
+<div class="admin-stat-grid">
+    <div class="admin-stat-card"><span>Total customers</span><strong>{{ total_customers }}</strong><small>Registered customer accounts</small><div class="stat-icon purple">♙</div></div>
+    <div class="admin-stat-card"><span>Restaurant partners</span><strong>{{ total_restaurants }}</strong><small>{{ approved_restaurants }} approved</small><div class="stat-icon coral">♧</div></div>
+    <div class="admin-stat-card"><span>Total bookings</span><strong>{{ total_bookings }}</strong><small>{{ confirmed_bookings }} confirmed</small><div class="stat-icon blue">▤</div></div>
+    <div class="admin-stat-card"><span>Pending approvals</span><strong>{{ pending_restaurants }}</strong><small class="warning-text">Requires review</small><div class="stat-icon yellow">◷</div></div>
+</div>
+<div class="admin-dashboard-grid">
+    <section class="admin-card"><div class="admin-card-heading"><div><h2>Platform snapshot</h2><p>Current booking status</p></div></div>
+        <div class="snapshot-row"><span><i class="snapshot-dot green"></i> Confirmed</span><strong>{{ confirmed_bookings }}</strong></div>
+        <div class="snapshot-row"><span><i class="snapshot-dot orange"></i> Pending</span><strong>{{ pending_bookings }}</strong></div>
+        <div class="snapshot-row"><span><i class="snapshot-dot red"></i> Cancelled</span><strong>{{ cancelled_bookings }}</strong></div>
+        <div class="snapshot-total"><span>Total bookings</span><strong>{{ total_bookings }}</strong></div>
+    </section>
+    <section class="admin-card"><div class="admin-card-heading"><div><h2>Venue overview</h2><p>Listing publication status</p></div></div>
+        <div class="snapshot-row"><span>All venues</span><strong>{{ total_venues }}</strong></div>
+        <div class="snapshot-row"><span>Published venues</span><strong>{{ published_venues }}</strong></div>
+        <div class="snapshot-row"><span>Approved partners</span><strong>{{ approved_restaurants }}</strong></div>
+    </section>
+</div>
+<section class="admin-card admin-table-card">
+    <div class="admin-card-heading"><div><h2>Recent bookings</h2><p>Latest activity on the platform</p></div><a href="{{ url_for('admin.bookings') }}" class="admin-text-link">View all ↗</a></div>
+    <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Reference</th><th>Customer</th><th>Venue</th><th>Event date</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody>
+    {% for booking in recent_bookings %}<tr><td>{{ booking.booking_reference }}</td><td>{{ booking.customer.full_name }}</td><td>{{ booking.venue.name }}</td><td>{{ booking.event_date.strftime('%d %b %Y') }}</td><td>₹{{ "%.2f"|format(booking.total_amount or 0) }}</td><td><span class="admin-status {{ booking.status }}">{{ booking.status|title }}</span></td><td><a href="{{ url_for('admin.booking_details', booking_id=booking.id) }}">View ↗</a></td></tr>
+    {% else %}<tr><td colspan="7">No bookings yet.</td></tr>{% endfor %}
+    </tbody></table></div>
+</section>
+<section class="admin-card"><div class="admin-card-heading"><div><h2>Recent restaurant applications</h2><p>Partners awaiting verification</p></div><a href="{{ url_for('admin.restaurants', status='pending') }}" class="admin-text-link">Review partners ↗</a></div>
+    {% for restaurant in recent_restaurants if restaurant.verification_status == 'pending' %}
+    <div class="approval-row"><div class="approval-avatar">{{ restaurant.business_name[:2]|upper }}</div><div class="approval-info"><strong>{{ restaurant.business_name }}</strong><small>{{ restaurant.city or restaurant.address or 'Location not provided' }}</small></div><a href="{{ url_for('admin.restaurant_details', restaurant_id=restaurant.id) }}" class="admin-status pending">Review</a></div>
+    {% else %}<p>No pending restaurant applications in the latest records.</p>{% endfor %}
+</section>
+{% endblock %}

@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+{% block title %}Event Details | PartyPilot{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="booking-page">
+    <div class="booking-intro">
+        <a href="{{ url_for('customer.venue_packages', venue_id=venue.id) }}" class="back-link">← Back to packages</a>
+        <span class="eyebrow">STEP 3 OF 3</span>
+        <h1>Plan your event at <span>{{ venue.name }}.</span></h1>
+        <p>Share a few details so the venue can prepare for your event.</p>
+    </div>
+
+    <form class="event-form" id="eventBookingForm" action="{{ url_for('bookings.create_booking', venue_id=venue.id) }}" method="POST">
+        {% if selected_package %}<input type="hidden" name="package_id" value="{{ selected_package.id }}">{% endif %}
+        <div class="form-section">
+            <span class="form-step">01</span>
+            <div class="form-section-content">
+                <h2>Event details</h2>
+                <p>When and what are we celebrating?</p>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="eventName">Event name</label>
+                        <input id="eventName" name="event_name" type="text" placeholder="e.g. Annual Team Celebration" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="eventType">Event type</label>
+                        <select id="eventType" name="event_type" required>
+                            <option value="">Choose event type</option>
+                            <option>Corporate Party</option>
+                            <option>Team Dinner</option>
+                            <option>Office Celebration</option>
+                            <option>Conference</option>
+                            <option>Team Outing</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="eventDate">Event date</label>
+                        <input id="eventDate" name="event_date" type="date" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="eventTime">Start time</label>
+                        <input id="eventTime" name="event_time" type="time" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="guestCountForm">Number of guests</label>
+                        <input id="guestCountForm" name="guests" type="number" min="{{ venue.min_capacity or 1 }}" max="{{ venue.max_capacity }}" value="{{ venue.min_capacity or 1 }}" required>
+                        <small>Capacity: {{ venue.min_capacity or 1 }}–{{ venue.max_capacity }} guests</small>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="eventDuration">Expected duration</label>
+                        <select id="eventDuration" name="duration" required>
+                            <option value="">Choose duration</option>
+                            <option>2 hours</option>
+                            <option>3 hours</option>
+                            <option>4 hours</option>
+                            <option>5 hours</option>
+                            <option>Full day</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <span class="form-step">02</span>
+            <div class="form-section-content">
+                <h2>Organiser information</h2>
+                <p>Who should the venue contact?</p>
+
+                <div class="form-grid">
+                    <div class="form-field">
+                        <label for="organiserName">Your full name</label>
+                        <input id="organiserName" name="organiser_name" type="text" value="{{ current_user.full_name }}" placeholder="Enter your name" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="companyName">Company name</label>
+                        <input id="companyName" name="company_name" type="text" placeholder="Enter company name">
+                    </div>
+
+                    <div class="form-field">
+                        <label for="organiserEmail">Email address</label>
+                        <input id="organiserEmail" name="email" type="email" value="{{ current_user.email }}" placeholder="you@company.com" required>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="organiserPhone">Phone number</label>
+                        <input id="organiserPhone" name="phone" type="tel" value="{{ current_user.phone or '' }}" placeholder="10-digit mobile number" pattern="[6-9][0-9]{9}" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <span class="form-step">03</span>
+            <div class="form-section-content">
+                <h2>Anything else?</h2>
+                <p>Let the venue know about special requirements.</p>
+
+                <div class="form-field">
+                    <label for="specialRequests">Special requests (optional)</label>
+                    <textarea id="specialRequests" name="special_requests" rows="4" placeholder="Decorations, dietary preferences, accessibility needs, music preferences..."></textarea>
+                </div>
+
+                <label class="form-checkbox">
+                    <input type="checkbox" name="terms" required>
+                    <span>I confirm that the information provided is correct.</span>
+                </label>
+            </div>
+        </div>
+
+        {% if selected_package %}
+        <p class="selected-package-note">Selected package: <strong>{{ selected_package.name }}</strong> — ₹{{ "%.2f"|format(selected_package.price_per_person) }} per person</p>
+        {% endif %}
+        <div class="form-submit-row">
+            <p>You'll review your booking before submitting it.</p>
+            <button class="btn btn-primary" type="submit">Review booking ↗</button>
+        </div>
+        <p class="form-error" id="bookingFormError" role="alert" hidden></p>
+    </form>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/booking.js') }}"></script>
+{% endblock %}

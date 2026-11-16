@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}{{ venue.name }} | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">{% endblock %}
+{% block content %}
+<section class="venue-detail-page">
+    <a href="{{ url_for('venues.explore') }}" class="back-link">← Back to venues</a>
+    <div class="detail-heading">
+        <div><span class="eyebrow">✦ VENUE DETAILS</span><h1>{{ venue.name }}</h1>
+            <p>📍 {{ venue.city }}{% if venue.state %}, {{ venue.state }}{% endif %} · {{ venue.address }}</p></div>
+        <span class="detail-category">{{ venue.venue_type or 'Event venue' }}</span>
+    </div>
+    <div class="detail-gallery">
+        {% set primary = namespace(path='') %}
+        {% for image in images %}{% if image.is_primary and not primary.path %}{% set primary.path = image.image_path %}{% endif %}{% endfor %}
+        {% if not primary.path and images %}{% set primary.path = images[0].image_path %}{% endif %}
+        <img class="gallery-main" src="{{ primary.path or url_for('static', filename='images/venue-placeholder.svg') }}" alt="{{ venue.name }}">
+        {% for image in images if not image.is_primary %}
+        <img src="{{ image.image_path }}" alt="{{ venue.name }} photo" loading="lazy">
+        {% endfor %}
+    </div>
+    <div class="detail-layout">
+        <div class="detail-main">
+            <section class="detail-section">
+                <h2>About this venue</h2>
+                <p class="detail-copy">{{ venue.description or 'Contact the venue for more information.' }}</p>
+                <div class="detail-highlights">
+                    <div><span>👥</span><strong>{{ venue.max_capacity }}</strong><small>Maximum capacity</small></div>
+                    <div><span>💰</span><strong>₹{{ "%.2f"|format(venue.price_per_person or 0) }}</strong><small>Price per person</small></div>
+                    <div><span>🏢</span><strong>{{ venue.restaurant.business_name }}</strong><small>Restaurant partner</small></div>
+                </div>
+            </section>
+            {% if menus %}
+            <section class="detail-section"><h2>Available menus</h2>
+                {% for menu in menus %}<div class="menu-summary-card"><h3>{{ menu.name }}</h3><p>{{ menu.description or '' }}</p></div>{% endfor %}
+            </section>{% endif %}
+            {% if packages %}
+            <section class="detail-section"><h2>Event packages</h2>
+                {% for package in packages %}<div class="menu-summary-card"><h3>{{ package.name }}</h3><p>{{ package.description or package.inclusions or '' }}</p><strong>₹{{ "%.2f"|format(package.price_per_person) }} / person</strong></div>{% endfor %}
+            </section>{% endif %}
+        </div>
+        <aside class="booking-sidebar">
+            <span class="eyebrow">PLAN YOUR EVENT</span><h2>{{ venue.name }}</h2>
+            <div class="sidebar-row"><span>Capacity</span><strong>{{ venue.min_capacity or 1 }}–{{ venue.max_capacity }}</strong></div>
+            <div class="sidebar-row"><span>Starting price</span><strong>₹{{ "%.2f"|format(venue.price_per_person or 0) }}</strong></div>
+            <a href="{{ url_for('customer.venue_menu', venue_id=venue.id) }}" class="btn btn-outline sidebar-button">View menu</a>
+            <a href="{{ url_for('customer.venue_packages', venue_id=venue.id) }}" class="btn btn-outline sidebar-button">View packages</a>
+            <a href="{{ url_for('bookings.create_booking', venue_id=venue.id) }}" class="btn btn-primary sidebar-button">Request booking ↗</a>
+        </aside>
+    </div>
+</section>
+{% endblock %}

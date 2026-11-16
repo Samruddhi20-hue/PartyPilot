@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Request Sent | PartyPilot{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">
+{% endblock %}
+{% block content %}
+<section class="success-page">
+    <div class="success-card">
+        <div class="success-icon">✓</div>
+        <span class="eyebrow">REQUEST SUBMITTED</span>
+        <h1>Your event is one step <span>closer!</span></h1>
+        <p>Your booking request for <strong>{{ booking.venue.name }}</strong> has been recorded. The venue will review your request.</p>
+        <div class="success-reference">
+            <small>BOOKING REFERENCE</small>
+            <strong>{{ booking.booking_reference }}</strong>
+        </div>
+        <div class="success-status">
+            <span class="status-dot"></span>
+            <div><strong>{{ booking.status|title }}</strong><small>Waiting for venue confirmation</small></div>
+        </div>
+        <div class="success-actions">
+            <a href="{{ url_for('customer.my_bookings') }}" class="btn btn-primary">View my bookings ↗</a>
+            <a href="{{ url_for('customer.explore') }}" class="btn btn-outline">Explore more venues</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

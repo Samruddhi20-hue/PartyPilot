@@ -1,0 +1,12 @@
+{% extends 'admin/base.html' %}
+{% block title %}Customers | PartyPilot Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading"><div><span class="admin-eyebrow">USER MANAGEMENT</span><h1>Customers</h1><p>View registered customer accounts.</p></div><span class="admin-chip">{{ customers|length }} results</span></div>
+<section class="admin-card">
+    <form class="admin-toolbar" method="GET" action="{{ url_for('admin.customers') }}"><input type="search" name="search" value="{{ search }}" placeholder="Search name, email or phone..."><button type="submit" class="admin-btn">Search</button></form>
+    <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Customer</th><th>Phone</th><th>Joined</th><th>Total bookings</th><th>Status</th></tr></thead><tbody>
+    {% for customer in customers %}<tr><td><strong>{{ customer.full_name }}</strong><small>{{ customer.email }}</small></td><td>{{ customer.phone or '—' }}</td><td>{{ customer.created_at.strftime('%d %b %Y') if customer.created_at else '—' }}</td><td>{{ customer.bookings|length }}</td><td><span class="admin-status {{ 'confirmed' if customer.is_active else 'cancelled' }}">{{ 'Active' if customer.is_active else 'Inactive' }}</span></td></tr>
+    {% else %}<tr><td colspan="5">No customers found.</td></tr>{% endfor %}
+    </tbody></table></div>
+</section>
+{% endblock %}

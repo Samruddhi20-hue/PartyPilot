@@ -1,0 +1,62 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}PartyPilot{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Global Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <!-- Page-specific CSS -->
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    {% include 'components/navbar.html' %}
+
+    <!-- Flash Messages -->
+    {% include 'components/flash_messages.html' %}
+
+    <!-- Main Page Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    {% include 'components/footer.html' %}
+
+    <script>
+    (function () {
+        const token = {{ csrf_token()|tojson }};
+        document.querySelectorAll("form").forEach(function (form) {
+            const method = (form.getAttribute("method") || "GET").toUpperCase();
+            if (["POST", "PUT", "PATCH", "DELETE"].includes(method) &&
+                !form.querySelector('input[name="_csrf_token"]')) {
+                const input = document.createElement("input");
+                input.type = "hidden";
+                input.name = "_csrf_token";
+                input.value = token;
+                form.appendChild(input);
+            }
+        });
+        window.PARTYPILOT_CSRF_TOKEN = token;
+    })();
+    </script>
+
+    <!-- Global JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+    <!-- Page-specific JavaScript -->
+    {% block extra_js %}{% endblock %}
+
+</body>
+</html>

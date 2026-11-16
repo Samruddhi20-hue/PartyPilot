@@ -1,0 +1,1 @@
+// Venue discovery filters are submitted to Flask and applied to PostgreSQL.\n

@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}Add Venue | PartyPilot{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="restaurant-dashboard">
+    <a href="{{ url_for('restaurant.venues') }}" class="back-link">← Back to my venues</a>
+
+    <div class="restaurant-welcome">
+        <div>
+            <span class="eyebrow">GROW YOUR LISTING</span>
+            <h1>Add a new <span>venue.</span></h1>
+            <p>Give customers the details they need to discover your space.</p>
+        </div>
+    </div>
+
+    <form action="{{ url_for('restaurant.add_venue') }}" method="POST" class="partner-form" id="venueForm">
+        <div class="partner-form-section">
+            <h2>Venue information</h2>
+            <p>Tell customers about this event space.</p>
+            <div class="form-grid">
+                <div class="form-field">
+                    <label for="venueName">Venue name</label>
+                    <input id="venueName" name="name" type="text" placeholder="e.g. The Garden Room" required>
+                </div>
+                <div class="form-field">
+                    <label for="venueType">Venue type</label>
+                    <select id="venueType" name="venue_type" required>
+                        <option value="">Select venue type</option>
+                        <option>Restaurant</option>
+                        <option>Private Dining</option>
+                        <option>Banquet Hall</option>
+                        <option>Rooftop</option>
+                        <option>Outdoor Space</option>
+                        <option>Lounge</option>
+                    </select>
+                </div>
+                <div class="form-field full-field">
+                    <label for="venueDescription">Description</label>
+                    <textarea id="venueDescription" name="description" rows="4" placeholder="Describe the venue, ambience and event experience..." required></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="partner-form-section">
+            <h2>Location</h2>
+            <div class="form-grid">
+                <div class="form-field">
+                    <label for="venueCity">City</label>
+                    <input id="venueCity" name="city" type="text" placeholder="Pune" required>
+                </div>
+                <div class="form-field">
+                    <label for="venueState">State</label>
+                    <input id="venueState" name="state" type="text" placeholder="Maharashtra">
+                </div>
+                <div class="form-field">
+                    <label for="venuePincode">PIN code</label>
+                    <input id="venuePincode" name="pincode" type="text" maxlength="12" placeholder="411001">
+                </div>
+                <div class="form-field full-field">
+                    <label for="venueAddress">Complete address</label>
+                    <textarea id="venueAddress" name="address" rows="3" placeholder="Full venue address" required></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div class="partner-form-section">
+            <h2>Capacity and pricing</h2>
+            <div class="form-grid">
+                <div class="form-field">
+                    <label for="venueMinCapacity">Minimum guest capacity</label>
+                    <input id="venueMinCapacity" name="min_capacity" type="number" min="1" value="1" required>
+                </div>
+                <div class="form-field">
+                    <label for="venueCapacity">Maximum guest capacity</label>
+                    <input id="venueCapacity" name="capacity" type="number" min="1" placeholder="e.g. 150" required>
+                </div>
+                <div class="form-field">
+                    <label for="venuePrice">Starting price per person (₹)</label>
+                    <input id="venuePrice" name="price_per_person" type="number" min="0" step="0.01" placeholder="e.g. 1200" required>
+                </div>
+                <div class="form-field">
+                    <label for="venueBasePrice">Venue base charge (₹)</label>
+                    <input id="venueBasePrice" name="base_price" type="number" min="0" step="0.01" value="0">
+                </div>
+            </div>
+        </div>
+        <div class="partner-form-section">
+            <h2>Venue photos</h2>
+            <p>Create the venue first, then use its Photos page to upload images to your listing.</p>
+        </div>
+
+        <div class="partner-form-footer">
+            <p>Your listing can be saved as a draft.</p>
+            <div class="partner-form-buttons">
+                <button type="submit" name="action" value="draft" class="btn btn-outline">Save as draft</button>
+                <button type="submit" name="action" value="publish" class="btn btn-primary">Create venue ↗</button>
+            </div>
+        </div>
+    </form>
+</section>
+{% endblock %}

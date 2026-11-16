@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Restaurant Partner Registration | PartyPilot{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="auth-visual restaurant-visual">
+        <span class="eyebrow">✦ PARTNER WITH PARTYPILOT</span>
+        <h1>Your space.<br>More events.<br><span>More growth.</span></h1>
+        <p>Showcase your restaurant, connect with corporate customers and grow your event business.</p>
+        <div class="auth-visual-art">🍽️ 🥂 ✨</div>
+        <small>GOOD VENUES DESERVE GREAT VISIBILITY.</small>
+    </div>
+
+    <div class="auth-form-side">
+        <form class="auth-form" action="{{ url_for('auth.restaurant_register') }}" method="POST">
+            <a href="{{ url_for('home') }}" class="auth-back">← Back to home</a>
+            <span class="eyebrow">BECOME A PARTNER</span>
+            <h2>Join PartyPilot</h2>
+            <p class="auth-subtitle">Create your restaurant partner account.</p>
+
+            <div class="auth-field">
+                <label for="ownerName">Owner / Contact person</label>
+                <input id="ownerName" name="owner_name" type="text" placeholder="Full name" required>
+            </div>
+
+            <div class="auth-field">
+                <label for="restaurantName">Restaurant name</label>
+                <input id="restaurantName" name="restaurant_name" type="text" placeholder="Your restaurant name" required>
+            </div>
+
+            <div class="auth-field">
+                <label for="restaurantEmail">Business email</label>
+                <input id="restaurantEmail" name="email" type="email" placeholder="business@example.com" required>
+            </div>
+
+            <div class="auth-field">
+                <label for="restaurantPhone">Contact number</label>
+                <input id="restaurantPhone" name="phone" type="tel" pattern="[6-9][0-9]{9}" placeholder="10-digit mobile number" required>
+            </div>
+
+            <div class="auth-field">
+                <label for="restaurantPassword">Create password</label>
+                <input id="restaurantPassword" name="password" type="password" minlength="8" placeholder="At least 8 characters" required>
+            </div>
+
+            <label class="auth-terms">
+                <input type="checkbox" required>
+                <span>I agree to the partner terms and privacy policy.</span>
+            </label>
+
+            <button type="submit" class="btn btn-primary auth-submit">Create partner account ↗</button>
+            <p class="auth-switch">Already a partner? <a href="{{ url_for('auth.restaurant_login') }}">Login here</a></p>
+        </form>
+    </div>
+</section>
+{% endblock %}

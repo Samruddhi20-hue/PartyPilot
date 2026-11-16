@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}Review Booking | PartyPilot{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">
+{% endblock %}
+{% block content %}
+<section class="booking-page">
+    <div class="booking-intro">
+        <a href="{{ url_for('bookings.create_booking', venue_id=venue.id, package_id=package.id if package else '') }}" class="back-link">← Edit event details</a>
+        <span class="eyebrow">FINAL STEP</span>
+        <h1>Review your <span>booking.</span></h1>
+        <p>Please check the details before sending your request.</p>
+    </div>
+    <div class="booking-review-layout">
+        <div class="booking-review-content">
+            <div class="review-card">
+                <h2>Venue and event</h2>
+                <div class="review-detail-grid">
+                    <div><small>Venue</small><strong>{{ venue.name }}</strong></div>
+                    <div><small>Location</small><strong>{{ venue.city }}, {{ venue.state or '' }}</strong></div>
+                    <div><small>Event name</small><strong>{{ draft.event_name }}</strong></div>
+                    <div><small>Event type</small><strong>{{ draft.event_type }}</strong></div>
+                    <div><small>Date</small><strong>{{ draft.event_date }}</strong></div>
+                    <div><small>Start time</small><strong>{{ draft.start_time }}</strong></div>
+                    <div><small>Duration</small><strong>{{ draft.duration }}</strong></div>
+                    <div><small>Guests</small><strong>{{ draft.guest_count }}</strong></div>
+                </div>
+            </div>
+            <div class="review-card">
+                <h2>Organiser details</h2>
+                <div class="review-detail-grid">
+                    <div><small>Name</small><strong>{{ draft.organiser_name }}</strong></div>
+                    <div><small>Company</small><strong>{{ draft.company_name or 'Not provided' }}</strong></div>
+                    <div><small>Email</small><strong>{{ draft.contact_email }}</strong></div>
+                    <div><small>Phone</small><strong>{{ draft.contact_phone }}</strong></div>
+                </div>
+                <div class="review-notes"><small>Special requests</small><p>{{ draft.special_requests or 'No special requests.' }}</p></div>
+            </div>
+            {% if package %}
+            <div class="review-card">
+                <h2>Selected package</h2>
+                <strong>{{ package.name }}</strong>
+                <p>{{ package.description or package.inclusions or '' }}</p>
+                <strong>₹{{ "%.2f"|format(package.price_per_person) }} / person</strong>
+            </div>
+            {% endif %}
+        </div>
+        <aside class="booking-sidebar cost-sidebar">
+            <span class="eyebrow">ESTIMATED COST</span>
+            <h2>Cost breakdown</h2>
+            <div class="sidebar-row"><span>Guests</span><strong>{{ draft.guest_count }}</strong></div>
+            <div class="sidebar-row"><span>Price per person</span><strong>₹{{ "%.2f"|format((package.price_per_person if package else venue.price_per_person) or 0) }}</strong></div>
+            <div class="sidebar-row"><span>Venue base charge</span><strong>₹{{ "%.2f"|format(venue.base_price or 0) }}</strong></div>
+            <div class="sidebar-divider"></div>
+            <div class="sidebar-total"><span>Estimated total</span><strong>₹{{ "%.2f"|format(total_amount) }}</strong></div>
+            <p class="cost-disclaimer">This is a booking request. The venue must confirm availability and the final details.</p>
+            <form action="{{ url_for('bookings.confirm_booking') }}" method="POST">
+                <button class="btn btn-primary sidebar-button" type="submit">Send booking request ↗</button>
+            </form>
+        </aside>
+    </div>
+</section>
+{% endblock %}

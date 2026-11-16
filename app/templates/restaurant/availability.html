@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Venue Availability | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="restaurant-dashboard">
+    <div class="restaurant-welcome"><div><span class="eyebrow">CONTROL YOUR BOOKINGS</span><h1>Manage <span>availability.</span></h1><p>Publish the dates and time ranges when customers can request events.</p></div></div>
+    <div class="partner-form">
+        <h2>Add an available time slot</h2>
+        <form action="{{ url_for('restaurant.add_availability') }}" method="POST" class="partner-form">
+            <div class="form-grid">
+                <div class="form-field"><label for="availabilityVenue">Venue</label><select id="availabilityVenue" name="venue_id" required><option value="">Choose venue</option>{% for venue in venues %}<option value="{{ venue.id }}">{{ venue.name }}</option>{% endfor %}</select></div>
+                <div class="form-field"><label for="availabilityDate">Date</label><input id="availabilityDate" name="available_date" type="date" min="{{ now_date or '' }}" required></div>
+                <div class="form-field"><label for="availabilityStart">Start time</label><input id="availabilityStart" name="start_time" type="time" required></div>
+                <div class="form-field"><label for="availabilityEnd">End time</label><input id="availabilityEnd" name="end_time" type="time" required></div>
+                <div class="form-field full-field"><label for="availabilityNotes">Notes (optional)</label><input id="availabilityNotes" name="notes" maxlength="255"></div>
+            </div>
+            <button type="submit" class="btn btn-primary">Add availability ↗</button>
+        </form>
+    </div>
+    <section class="partner-card"><div class="partner-card-heading"><div><h2>Published availability</h2><p>Only available slots can receive new booking requests.</p></div></div>
+        <div class="menu-item-table-wrap"><table class="partner-table"><thead><tr><th>Venue</th><th>Date</th><th>Time</th><th>Notes</th><th>Status</th><th>Action</th></tr></thead><tbody>
+        {% for slot in availability %}<tr><td>{{ slot.venue.name }}</td><td>{{ slot.available_date.strftime('%d %b %Y') }}</td><td>{{ slot.start_time.strftime('%I:%M %p') }} – {{ slot.end_time.strftime('%I:%M %p') }}</td><td>{{ slot.notes or '—' }}</td><td><span class="partner-status {{ 'published' if slot.is_available else 'draft' }}">{{ 'Available' if slot.is_available else 'Blocked' }}</span></td><td><form action="{{ url_for('restaurant.toggle_availability', slot_id=slot.id) }}" method="POST"><button class="btn btn-outline" type="submit">{{ 'Block' if slot.is_available else 'Make available' }}</button></form></td></tr>
+        {% else %}<tr><td colspan="6">No availability slots have been added yet.</td></tr>{% endfor %}
+        </tbody></table></div>
+    </section>
+</section>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Notifications | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">{% endblock %}
+{% block content %}
+<section class="customer-dashboard-page">
+    <div class="dashboard-welcome"><div><span class="eyebrow">STAY IN THE LOOP</span><h1>Notifications<span>.</span></h1><p>Updates about your bookings and events.</p></div>
+        {% if notifications %}<form action="{{ url_for('customer.mark_all_notifications_read') }}" method="POST"><button type="submit" class="btn btn-outline">Mark all as read</button></form>{% endif %}
+    </div>
+    <div class="notification-list">
+        {% for notification in notifications %}
+        <article class="notification-item {{ 'unread' if not notification.is_read else '' }}">
+            <div class="notification-icon purple-icon">🔔</div>
+            <div class="notification-content"><strong>{{ notification.title }}</strong><p>{{ notification.message }}</p><small>{{ notification.created_at.strftime('%d %b %Y · %I:%M %p') if notification.created_at else '' }}</small></div>
+            {% if not notification.is_read %}<form action="{{ url_for('customer.mark_notification_read', notification_id=notification.id) }}" method="POST"><button type="submit" class="btn btn-outline">Mark read</button></form><span class="unread-dot"></span>{% endif %}
+        </article>
+        {% else %}<div class="empty-results"><h3>You're all caught up</h3><p>Your booking and account updates will appear here.</p></div>{% endfor %}
+    </div>
+</section>
+{% endblock %}

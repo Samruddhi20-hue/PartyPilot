@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Business Profile | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="restaurant-dashboard">
+    <div class="restaurant-welcome"><div><span class="eyebrow">BUSINESS SETTINGS</span><h1>Business profile<span>.</span></h1><p>Manage the information customers see about your restaurant.</p></div><a href="{{ url_for('restaurant.dashboard') }}" class="btn btn-outline">← Dashboard</a></div>
+    <form action="{{ url_for('restaurant.profile') }}" method="POST" class="partner-form profile-partner-form">
+        <div class="partner-form-section"><div class="profile-form-header"><div class="partner-avatar partner-avatar-large">{{ profile.business_name[:1]|upper }}</div><div><h2>{{ profile.business_name }}</h2><p>Restaurant partner profile · {{ profile.verification_status|title }}</p></div></div>
+            <div class="form-grid">
+                <div class="form-field"><label for="partnerBusinessName">Business name</label><input id="partnerBusinessName" name="business_name" value="{{ profile.business_name }}" maxlength="180" required></div>
+                <div class="form-field"><label for="partnerBusinessEmail">Business email</label><input id="partnerBusinessEmail" name="contact_email" type="email" value="{{ profile.contact_email or '' }}"></div>
+                <div class="form-field"><label for="partnerBusinessPhone">Business phone</label><input id="partnerBusinessPhone" name="contact_phone" type="tel" value="{{ profile.contact_phone or '' }}"></div>
+                <div class="form-field"><label for="partnerCity">City</label><input id="partnerCity" name="city" value="{{ profile.city or '' }}"></div>
+                <div class="form-field"><label for="partnerState">State</label><input id="partnerState" name="state" value="{{ profile.state or '' }}"></div>
+                <div class="form-field"><label for="partnerPincode">PIN code</label><input id="partnerPincode" name="pincode" value="{{ profile.pincode or '' }}" maxlength="12"></div>
+                <div class="form-field full-field"><label for="partnerAddress">Full address</label><textarea id="partnerAddress" name="address" rows="3">{{ profile.address or '' }}</textarea></div>
+                <div class="form-field full-field"><label for="partnerDescription">About your restaurant</label><textarea id="partnerDescription" name="description" rows="5">{{ profile.description or '' }}</textarea></div>
+            </div>
+        </div>
+        <div class="partner-form-footer"><p>These details are saved to your restaurant profile.</p><button class="btn btn-primary" type="submit">Save profile ↗</button></div>
+    </form>
+</section>
+{% endblock %}

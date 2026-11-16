@@ -1,0 +1,34 @@
+
+{% macro venue_card(id, name, location, image, price, capacity, category, description) %}
+<article class="venue-card"
+    data-id="{{ id }}"
+    data-location="{{ location|lower }}"
+    data-price="{{ price }}"
+    data-capacity="{{ capacity }}"
+    data-category="{{ category|lower }}">
+
+    <div class="venue-image">
+        <img src="{{ image }}" alt="{{ name }}" loading="lazy">
+        <span class="venue-tag">{{ category }}</span>
+        <button class="favorite-btn" aria-label="Add {{ name }} to favourites">♡</button>
+    </div>
+
+    <div class="venue-info">
+        <div class="venue-title">
+            <h3>{{ name }}</h3>
+        </div>
+
+        <p class="venue-location">📍 {{ location }}</p>
+        <p class="venue-description">{{ description }}</p>
+
+        <div class="venue-meta">
+            <span>👥 Up to {{ capacity }} guests</span>
+            <strong>₹{{ "{:,}".format(price) }} <small>/ person</small></strong>
+        </div>
+
+        <a href="{{ url_for('customer.venue_details', venue_id=id) }}" class="btn btn-primary venue-btn">
+            Explore Venue ↗
+        </a>
+    </div>
+</article>
+{% endmacro %}

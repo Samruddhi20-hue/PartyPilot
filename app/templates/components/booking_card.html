@@ -1,0 +1,45 @@
+{% macro render_booking_card(booking) %}
+<article class="booking-card">
+    <div class="booking-card-header">
+        <div>
+            <span class="booking-reference">
+                Booking #{{ booking.id | default('PP-0001') }}
+            </span>
+            <h3>{{ booking.venue_name | default('Venue name') }}</h3>
+        </div>
+
+        {% set status = booking.status | default('Pending') %}
+        <span class="booking-status status-{{ status | lower | replace(' ', '-') }}">
+            {{ status }}
+        </span>
+    </div>
+
+    <div class="booking-card-details">
+        <div>
+            <span>Event date</span>
+            <strong>{{ booking.event_date | default('Not specified') }}</strong>
+        </div>
+
+        <div>
+            <span>Event type</span>
+            <strong>{{ booking.event_type | default('Not specified') }}</strong>
+        </div>
+
+        <div>
+            <span>Guests</span>
+            <strong>{{ booking.guests | default('—') }}</strong>
+        </div>
+
+        <div>
+            <span>Estimated amount</span>
+            <strong>{{ booking.total_amount | default('To be confirmed') }}</strong>
+        </div>
+    </div>
+
+    {% if booking.id %}
+    <a href="{{ url_for('customer.booking_details', booking_id=booking.id) }}" class="btn btn-outline">
+        View Booking
+    </a>
+    {% endif %}
+</article>
+{% endmacro %}

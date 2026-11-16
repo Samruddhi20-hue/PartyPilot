@@ -1,0 +1,159 @@
+
+{% extends 'base.html' %}
+{% from 'components/venue_card.html' import venue_card %}
+
+{% block title %}Explore Venues | PartyPilot{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="explore-hero">
+    <span class="eyebrow">✦ YOUR NEXT EVENT STARTS HERE</span>
+    <h1>Find a space that<br><span>matches your vibe.</span></h1>
+    <p>Discover amazing venues for team dinners, corporate parties and celebrations.</p>
+
+    <div class="explore-count">
+        <strong id="venueCount">{{ venue_count }}</strong> venues to explore
+    </div>
+</section>
+
+<section class="explore-layout">
+
+    <aside class="filter-panel">
+        <form action="{{ url_for('venues.explore') }}" method="GET">
+
+            <div class="filter-heading">
+                <h3>Venue filters</h3>
+                <a href="{{ url_for('venues.explore') }}" id="resetFilters">Reset ↗</a>
+            </div>
+
+            <label for="locationFilter">Location</label>
+            <input
+                type="text"
+                id="locationFilter"
+                name="location"
+                value="{{ selected_location }}"
+                placeholder="Search city or area"
+            >
+
+            <label for="eventFilter">Venue type</label>
+            <select id="eventFilter" name="venue_type">
+                <option value="">All events</option>
+                <option value="Restaurant" {% if selected_event|lower == 'restaurant' %}selected{% endif %}>Restaurant</option>
+                <option value="Private Dining" {% if selected_event|lower == 'private dining' %}selected{% endif %}>Private Dining</option>
+                <option value="Banquet Hall" {% if selected_event|lower == 'banquet hall' %}selected{% endif %}>Banquet Hall</option>
+                <option value="Rooftop" {% if selected_event|lower == 'rooftop' %}selected{% endif %}>Rooftop</option>
+                <option value="Outdoor Space" {% if selected_event|lower == 'outdoor space' %}selected{% endif %}>Outdoor Space</option>
+                <option value="Lounge" {% if selected_event|lower == 'lounge' %}selected{% endif %}>Lounge</option>
+            </select>
+
+            <label for="guestFilter">Number of guests</label>
+            <input
+                type="number"
+                id="guestFilter"
+                name="guests"
+                min="1"
+                value="{{ selected_guests }}"
+                placeholder="e.g. 50"
+            >
+
+            <label for="budgetFilter">Maximum budget per person</label>
+            <select id="budgetFilter" name="budget">
+                <option value="">Any budget</option>
+                <option value="500" {% if selected_budget == 500 %}selected{% endif %}>Under ₹500</option>
+                <option value="1000" {% if selected_budget == 1000 %}selected{% endif %}>Under ₹1,000</option>
+                <option value="1500" {% if selected_budget == 1500 %}selected{% endif %}>Under ₹1,500</option>
+                <option value="3000" {% if selected_budget == 3000 %}selected{% endif %}>Under ₹3,000</option>
+            </select>
+
+            <button class="btn btn-primary filter-apply" id="applyFilters" type="submit">
+                Apply Filters
+            </button>
+        </form>
+    </aside>
+
+    <div class="venue-results">
+        <div class="results-heading">
+            <div>
+                <span class="eyebrow">CURATED FOR YOU</span>
+                <h2>Explore venues</h2>
+            </div>
+
+            <form action="{{ url_for('venues.explore') }}" method="GET">
+                <input type="hidden" name="location" value="{{ selected_location }}">
+                <input type="hidden" name="venue_type" value="{{ selected_event }}">
+                <input type="hidden" name="guests" value="{{ selected_guests }}">
+                <input type="hidden" name="budget" value="{{ selected_budget }}">
+
+                <select id="sortVenues" name="sort" aria-label="Sort venues" onchange="this.form.submit()">
+                    <option value="recommended" {% if selected_sort == 'recommended' %}selected{% endif %}>Recommended</option>
+                    <option value="low" {% if selected_sort == 'low' %}selected{% endif %}>Price: Low to High</option>
+                    <option value="high" {% if selected_sort == 'high' %}selected{% endif %}>Price: High to Low</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="venue-grid" id="venueGrid">
+
+            {% for venue in venues %}
+
+                {% set primary_image = namespace(path='') %}
+
+                {% for image in venue.images %}
+                    {% if image.is_primary and not primary_image.path %}
+                        {% set primary_image.path = image.image_path %}
+                    {% endif %}
+                {% endfor %}
+
+                {% if not primary_image.path and venue.images %}
+                    {% set primary_image.path = venue.images[0].image_path %}
+                {% endif %}
+
+                {% set image_url = primary_image.path or url_for('static', filename='images/venue-placeholder.svg') %}
+                {% set price = venue.price_per_person or 0 %}
+
+                {{ venue_card(
+                    venue.id,
+                    venue.name,
+                    venue.city,
+                    image_url,
+                    price,
+                    venue.max_capacity,
+                    'New',
+                    venue.venue_type or 'Events',
+                    venue.description or 'Discover this venue for your next event.'
+                ) }}
+
+            {% else %}
+
+                <div class="empty-results">
+                    <span>🔎</span>
+                    <h3>No venues found</h3>
+                    <p>
+                        {% if selected_location or selected_event or selected_guests or selected_budget %}
+                            Try changing your filters to discover more venues.
+                        {% else %}
+                            No approved and published venues are available yet.
+                            Check back soon!
+                        {% endif %}
+                    </p>
+                    <a href="{{ url_for('venues.explore') }}" class="btn btn-primary">
+                        Clear Filters
+                    </a>
+                </div>
+
+            {% endfor %}
+
+        </div>
+    </div>
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

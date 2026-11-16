@@ -1,0 +1,35 @@
+{% extends 'admin/base.html' %}
+{% block title %}{{ restaurant.business_name }} | PartyPilot Admin{% endblock %}
+{% block content %}
+<a href="{{ url_for('admin.restaurants') }}" class="admin-back-link">← Back to restaurants</a>
+<div class="admin-page-heading">
+    <div><span class="admin-eyebrow">PARTNER VERIFICATION</span><h1>{{ restaurant.business_name }}</h1><p>Review restaurant information before approving the application.</p></div>
+    <span class="admin-status {{ restaurant.verification_status }}">{{ restaurant.verification_status|title }}</span>
+</div>
+<div class="admin-detail-grid">
+    <section class="admin-card"><h2>Business information</h2><div class="admin-detail-list">
+        <div><span>Restaurant name</span><strong>{{ restaurant.business_name }}</strong></div>
+        <div><span>Owner / Contact person</span><strong>{{ restaurant.user.full_name }}</strong></div>
+        <div><span>Business email</span><strong>{{ restaurant.contact_email or restaurant.user.email }}</strong></div>
+        <div><span>Phone number</span><strong>{{ restaurant.contact_phone or restaurant.user.phone or 'Not provided' }}</strong></div>
+        <div><span>Address</span><strong>{{ restaurant.address or 'Not provided' }}</strong></div>
+        <div><span>City / State</span><strong>{{ restaurant.city or '—' }}{% if restaurant.state %}, {{ restaurant.state }}{% endif %}</strong></div>
+        <div><span>Application date</span><strong>{{ restaurant.created_at.strftime('%d %b %Y') if restaurant.created_at else '—' }}</strong></div>
+        <div><span>Venues</span><strong>{{ venues|length }}</strong></div>
+        <div><span>Bookings</span><strong>{{ booking_count }}</strong></div>
+    </div></section>
+    <section class="admin-card"><h2>Verification action</h2>
+        <p class="admin-muted">Approve this partner only after reviewing the submitted business information.</p>
+        <form action="{{ url_for('admin.update_restaurant_verification', restaurant_id=restaurant.id) }}" method="POST" class="admin-action-stack">
+            <button class="admin-btn admin-btn-primary" name="status" value="approved" type="submit">Approve partner ✓</button>
+            <button class="admin-btn admin-btn-danger" name="status" value="rejected" type="submit">Reject application</button>
+        </form>
+    </section>
+</div>
+{% if venues %}
+<section class="admin-card"><h2>Partner venues</h2><div class="admin-table-wrap"><table class="admin-table">
+<thead><tr><th>Venue</th><th>City</th><th>Capacity</th><th>Status</th></tr></thead>
+<tbody>{% for venue in venues %}<tr><td>{{ venue.name }}</td><td>{{ venue.city }}</td><td>{{ venue.max_capacity }}</td><td>{{ venue.status|title }}</td></tr>{% endfor %}</tbody>
+</table></div></section>
+{% endif %}
+{% endblock %}

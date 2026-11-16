@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}{{ 'Edit' if editing else 'Create' }} Event Package | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="restaurant-dashboard">
+    <a href="{{ url_for('restaurant.packages') }}" class="back-link">← Back to packages</a>
+    <div class="restaurant-welcome"><div><span class="eyebrow">DESIGN YOUR OFFERING</span><h1>{{ 'Edit your' if editing else 'Create an event' }} <span>package.</span></h1><p>Set the price, guest limits and inclusions for this offer.</p></div></div>
+    {% set included = (package.inclusions or '').split(', ') if editing else [] %}
+    <form action="{{ url_for('restaurant.edit_package', package_id=package.id) if editing else url_for('restaurant.add_package') }}" method="POST" class="partner-form">
+        <div class="partner-form-section"><h2>Package information</h2><div class="form-grid">
+            <div class="form-field"><label for="packageName">Package name</label><input id="packageName" name="name" type="text" value="{{ package.name if editing else '' }}" required maxlength="150"></div>
+            <div class="form-field"><label for="packageVenue">Select venue</label><select id="packageVenue" name="venue_id" {% if editing %}disabled{% else %}required{% endif %}>
+                {% for venue in venues %}<option value="{{ venue.id }}" {% if editing or loop.first %}selected{% endif %}>{{ venue.name }}</option>{% endfor %}
+            </select>{% if editing %}<input type="hidden" name="venue_id" value="{{ package.venue_id }}">{% endif %}</div>
+            <div class="form-field"><label for="packagePrice">Price per person (₹)</label><input id="packagePrice" name="price_per_person" type="number" min="0" step="0.01" value="{{ package.price_per_person if editing else '' }}" required></div>
+            <div class="form-field"><label for="packageMinGuests">Minimum guests</label><input id="packageMinGuests" name="min_guests" type="number" min="1" value="{{ package.min_guests if editing else 1 }}" required></div>
+            <div class="form-field"><label for="packageMaxGuests">Maximum guests</label><input id="packageMaxGuests" name="max_guests" type="number" min="1" value="{{ package.max_guests if editing else '' }}" required></div>
+            <div class="form-field"><label for="packageStatus">Package status</label><select id="packageStatus" name="status"><option value="active" {% if not editing or package.is_active %}selected{% endif %}>Active</option><option value="draft" {% if editing and not package.is_active %}selected{% endif %}>Save as inactive</option></select></div>
+            <div class="form-field full-field"><label for="packageDescription">Description</label><textarea id="packageDescription" name="description" rows="4">{{ package.description if editing else '' }}</textarea></div>
+        </div></div>
+        <div class="partner-form-section"><h2>What's included?</h2><p>Select the services included in this package.</p><div class="facility-checkbox-grid">
+            {% for item in ['Reserved seating','Food and beverages','Welcome drinks','Table decorations','Sound system','Projector','Event coordinator','Photo corner','Private space','Custom decorations'] %}
+            <label><input type="checkbox" name="inclusions" value="{{ item }}" {% if item in included %}checked{% endif %}> {{ item }}</label>
+            {% endfor %}
+        </div></div>
+        <div class="partner-form-footer"><p>You can update your package whenever you need.</p><div class="partner-form-buttons"><a href="{{ url_for('restaurant.packages') }}" class="btn btn-outline">Cancel</a><button type="submit" class="btn btn-primary">{{ 'Save changes' if editing else 'Create package' }} ↗</button></div></div>
+    </form>
+</section>
+{% endblock %}

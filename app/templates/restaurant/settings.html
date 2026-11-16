@@ -1,0 +1,99 @@
+
+{% extends "base.html" %}
+
+{% block title %}Restaurant Settings | PartyPilot{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="partner-page">
+    <div class="partner-page-header">
+        <div>
+            <span class="partner-eyebrow">ACCOUNT MANAGEMENT</span>
+            <h1>Settings</h1>
+            <p>Manage your restaurant account preferences and security.</p>
+        </div>
+    </div>
+
+    <div class="settings-layout">
+
+        <section class="partner-card settings-card">
+            <h2>Account Information</h2>
+            <p>Update your restaurant account details.</p>
+
+            <form id="restaurantSettingsForm" action="{{ url_for('restaurant.settings') }}" method="POST">
+                <div class="form-group">
+                    <label for="businessName">Business Name</label>
+                    <input type="text" id="businessName" name="business_name" value="{{ profile.business_name }}" required maxlength="180">
+                </div>
+                <div class="form-group">
+                    <label for="contactEmail">Business Email</label>
+                    <input type="email" id="contactEmail" name="contact_email" value="{{ profile.contact_email or '' }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="contactPhone">Contact Number</label>
+                    <input type="tel" id="contactPhone" name="contact_phone" value="{{ profile.contact_phone or '' }}" maxlength="20">
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+        </section>
+
+        <section class="partner-card settings-card">
+            <h2>Notifications</h2>
+            <p>Choose which updates you want to receive.</p>
+
+            <label class="settings-toggle">
+                <span>
+                    <strong>New Booking Requests</strong>
+                    <small>Get notified when customers request bookings.</small>
+                </span>
+                <input type="checkbox" id="bookingNotifications" checked>
+            </label>
+
+            <label class="settings-toggle">
+                <span>
+                    <strong>Booking Updates</strong>
+                    <small>Receive updates about your bookings.</small>
+                </span>
+                <input type="checkbox" id="updateNotifications" checked>
+            </label>
+
+            <label class="settings-toggle">
+                <span>
+                    <strong>Promotional Updates</strong>
+                    <small>Receive PartyPilot announcements and offers.</small>
+                </span>
+                <input type="checkbox" id="promoNotifications">
+            </label>
+
+            <button type="button" class="btn btn-primary" id="saveNotificationSettings">
+                Save Preferences
+            </button>
+        </section>
+
+        <section class="partner-card settings-card">
+            <h2>Security</h2>
+            <p>Keep your account secure.</p>
+
+            <div class="settings-action">
+                <div>
+                    <strong>Password</strong>
+                    <small>Change your account password.</small>
+                </div>
+                <a href="{{ url_for('auth.forgot_password') }}" class="btn btn-outline">Change Password</a>
+            </div>
+        </section>
+
+        <section class="partner-card settings-card danger-zone">
+            <h2>Account Actions</h2>
+            <p>Sign out of your restaurant account.</p>
+            <form action="{{ url_for('auth.logout') }}" method="POST"><button type="submit" class="btn btn-outline">Log Out</button></form>
+        </section>
+
+    </div>
+</section>
+{% endblock %}
+
+

@@ -1,0 +1,33 @@
+{% extends 'admin/base.html' %}
+{% block title %}Settings | PartyPilot Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading"><div><span class="admin-eyebrow">PREFERENCES</span><h1>Admin settings</h1><p>Manage your administrator account and security.</p></div></div>
+<section class="admin-card admin-settings-card">
+    <h2>Profile information</h2><p class="admin-muted">These details belong to your authenticated administrator account.</p>
+    <form action="{{ url_for('admin.settings') }}" method="POST">
+        <input type="hidden" name="action" value="profile">
+        <div class="admin-form-grid">
+            <label>Full name<input type="text" name="full_name" value="{{ admin_user.full_name }}" required></label>
+            <label>Email address<input type="email" name="email" value="{{ admin_user.email }}" required></label>
+            <label>Phone number<input type="tel" name="phone" value="{{ admin_user.phone or '' }}"></label>
+            <label>Role<input type="text" value="Platform Administrator" disabled></label>
+        </div>
+        <button type="submit" class="admin-btn admin-btn-primary">Save profile</button>
+    </form>
+</section>
+<section class="admin-card admin-settings-card">
+    <h2>Notifications</h2><p class="admin-muted">Platform notifications are stored in your PartyPilot notification records. Per-category preference controls are not currently stored, so this page does not display non-persistent toggles.</p>
+</section>
+<section class="admin-card admin-settings-card">
+    <h2>Security</h2><p class="admin-muted">Change your administrator password.</p>
+    <form action="{{ url_for('admin.settings') }}" method="POST">
+        <input type="hidden" name="action" value="password">
+        <div class="admin-form-grid">
+            <label>Current password<input type="password" name="current_password" autocomplete="current-password" required></label>
+            <label>New password<input type="password" name="new_password" minlength="10" autocomplete="new-password" required></label>
+            <label>Confirm new password<input type="password" name="confirm_password" minlength="10" autocomplete="new-password" required></label>
+        </div>
+        <button type="submit" class="admin-btn admin-btn-primary">Update password</button>
+    </form>
+</section>
+{% endblock %}

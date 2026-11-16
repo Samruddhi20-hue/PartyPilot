@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Menus | {{ venue.name }} | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">{% endblock %}
+{% block content %}
+<section class="booking-page">
+    <div class="booking-intro">
+        <a href="{{ url_for('customer.venue_details', venue_id=venue.id) }}" class="back-link">← Back to venue</a>
+        <span class="eyebrow">VENUE MENU</span><h1>Explore the <span>menu.</span></h1>
+        <p>Available menu items provided by {{ venue.restaurant.business_name }} at {{ venue.name }}.</p>
+    </div>
+    {% if menus %}
+        {% for menu in menus %}
+        <section class="menu-category">
+            <div class="menu-category-heading"><div><span>🍽️</span><h2>{{ menu.name }}</h2></div><small>{{ menu.description or '' }}</small></div>
+            <div class="menu-items">
+                {% for item in menu_items if item.menu_id == menu.id %}
+                <article class="menu-item">
+                    <span class="menu-item-info"><strong>{{ item.name }}</strong><small>{{ item.description or item.category or 'Menu item' }}</small><b>₹{{ "%.2f"|format(item.price) }}</b></span>
+                    <span class="menu-check">{{ item.dietary_type|title if item.dietary_type else 'Available' }}</span>
+                </article>
+                {% else %}<p>No available items in this menu yet.</p>{% endfor %}
+            </div>
+        </section>
+        {% endfor %}
+    {% else %}<div class="empty-results"><h3>Menu not available yet</h3><p>The restaurant has not published an active menu for this venue.</p></div>{% endif %}
+    <div class="package-bottom"><div><span class="eyebrow">NEXT STEP</span><h3>Choose an event package</h3><p>View packages and pricing available at this venue.</p></div>
+        <a href="{{ url_for('customer.venue_packages', venue_id=venue.id) }}" class="btn btn-primary">Continue to packages ↗</a></div>
+</section>
+{% endblock %}

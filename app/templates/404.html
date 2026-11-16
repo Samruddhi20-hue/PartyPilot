@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found | PartyPilot{% endblock %}
+
+{% block content %}
+<section class="error-page">
+    <div class="error-content">
+        <h1>404</h1>
+        <h2>Oops! This page is missing.</h2>
+        <p>The page you're looking for may have moved or doesn't exist.</p>
+        <a href="{{ url_for('home') }}" class="btn btn-primary">Back to Home</a>
+    </div>
+</section>
+{% endblock %}

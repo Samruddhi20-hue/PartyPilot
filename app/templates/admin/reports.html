@@ -1,0 +1,23 @@
+{% extends 'admin/base.html' %}
+{% block title %}Reports | PartyPilot Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading"><div><span class="admin-eyebrow">PLATFORM INSIGHTS</span><h1>Reports</h1><p>Current platform totals calculated from database records.</p></div><button class="admin-btn admin-btn-primary" type="button" onclick="window.print()">Print Report ↗</button></div>
+<div class="admin-mini-stats">
+    <div><span>Completed booking value</span><strong>₹{{ "%.2f"|format(completed_booking_value or 0) }}</strong></div>
+    <div><span>Total bookings</span><strong>{{ total_bookings }}</strong></div>
+    <div><span>Customers</span><strong>{{ total_customers }}</strong></div>
+    <div><span>Restaurant partners</span><strong>{{ total_restaurants }}</strong></div>
+</div>
+<section class="admin-card"><div class="admin-card-heading"><div><h2>Booking status summary</h2><p>Live booking counts</p></div></div>
+    <div class="snapshot-row"><span>Pending</span><strong>{{ pending_bookings }}</strong></div>
+    <div class="snapshot-row"><span>Confirmed</span><strong>{{ confirmed_bookings }}</strong></div>
+    <div class="snapshot-row"><span>Completed</span><strong>{{ completed_bookings }}</strong></div>
+    <div class="snapshot-row"><span>Cancelled</span><strong>{{ cancelled_bookings }}</strong></div>
+</section>
+<section class="admin-card"><div class="admin-card-heading"><div><h2>Venue and partner summary</h2></div></div>
+    <div class="snapshot-row"><span>Total venues</span><strong>{{ total_venues }}</strong></div>
+    <div class="snapshot-row"><span>Published venues</span><strong>{{ published_venues }}</strong></div>
+    <div class="snapshot-row"><span>Approved partners</span><strong>{{ approved_restaurants }}</strong></div>
+    <div class="snapshot-row"><span>Pending partners</span><strong>{{ pending_restaurants }}</strong></div>
+</section>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}Create Menu | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="restaurant-dashboard">
+    <a href="{{ url_for('restaurant.menus') }}" class="back-link">← Back to menus</a>
+    <div class="restaurant-welcome"><div><span class="eyebrow">BUILD YOUR FOOD COLLECTION</span><h1>Create a <span>menu.</span></h1><p>Set up a menu for one of your venues. Add individual dishes after saving.</p></div></div>
+    <form action="{{ url_for('restaurant.add_menu') }}" method="POST" class="partner-form">
+        <div class="partner-form-section"><h2>Menu information</h2><div class="form-grid">
+            <div class="form-field"><label for="menuName">Menu name</label><input id="menuName" name="name" type="text" maxlength="150" required></div>
+            <div class="form-field"><label for="menuVenue">Venue</label><select id="menuVenue" name="venue_id" required><option value="">Choose venue</option>{% for venue in venues %}<option value="{{ venue.id }}">{{ venue.name }}</option>{% endfor %}</select></div>
+            <div class="form-field"><label for="menuStatus">Menu status</label><select id="menuStatus" name="status"><option value="active">Active</option><option value="draft">Inactive</option></select></div>
+            <div class="form-field full-field"><label for="menuDescription">Menu description</label><textarea id="menuDescription" name="description" rows="4"></textarea></div>
+        </div></div>
+        <div class="partner-form-footer"><p>You can add food items after creating your menu.</p><div class="partner-form-buttons"><a href="{{ url_for('restaurant.menus') }}" class="btn btn-outline">Cancel</a><button type="submit" class="btn btn-primary">Create menu ↗</button></div></div>
+    </form>
+</section>
+{% endblock %}

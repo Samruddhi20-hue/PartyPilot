@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}My Dashboard | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">{% endblock %}
+{% block content %}
+<section class="customer-dashboard">
+    <div class="dashboard-welcome"><div><span class="eyebrow">YOUR PARTYPILOT SPACE</span><h1>Hey, {{ current_user.full_name.split(' ')[0] }} <span>✦</span></h1><p>Keep track of your event plans and bookings.</p></div>
+        <a href="{{ url_for('venues.explore') }}" class="btn btn-primary">+ Plan an event</a></div>
+    <div class="dashboard-stats">
+        <div class="dashboard-stat"><small>Total bookings</small><strong>{{ total_bookings }}</strong></div>
+        <div class="dashboard-stat"><small>Pending</small><strong>{{ pending_bookings }}</strong></div>
+        <div class="dashboard-stat"><small>Confirmed</small><strong>{{ confirmed_bookings }}</strong></div>
+        <div class="dashboard-stat"><small>Unread notifications</small><strong>{{ unread_notifications }}</strong></div>
+    </div>
+    <section class="dashboard-section"><div class="section-heading"><div><span class="eyebrow">YOUR EVENTS</span><h2>Recent bookings</h2></div><a href="{{ url_for('customer.my_bookings') }}">View all ↗</a></div>
+        {% for booking in bookings %}
+        <article class="my-booking-card" data-status="{{ booking.status }}">
+            <div><strong>{{ booking.venue.name }}</strong><p>{{ booking.event_type }} · {{ booking.event_date.strftime('%d %b %Y') }} · {{ booking.guest_count }} guests</p><small>{{ booking.booking_reference }}</small></div>
+            <span class="booking-status {{ booking.status }}">{{ booking.status|title }}</span>
+            <a href="{{ url_for('customer.booking_details', booking_id=booking.id) }}" class="text-link">View details ↗</a>
+        </article>
+        {% else %}<div class="empty-results"><h3>No bookings yet</h3><p>Explore venues and send your first booking request.</p><a href="{{ url_for('venues.explore') }}" class="btn btn-primary">Explore venues</a></div>{% endfor %}
+    </section>
+    <div class="dashboard-quick-links">
+        <a href="{{ url_for('venues.explore') }}">🔎 Explore venues ↗</a>
+        <a href="{{ url_for('customer.my_bookings') }}">📅 My bookings ↗</a>
+        <a href="{{ url_for('customer.notifications') }}">🔔 Notifications ↗</a>
+        <a href="{{ url_for('customer.profile') }}">👤 My profile ↗</a>
+    </div>
+</section>
+{% endblock %}

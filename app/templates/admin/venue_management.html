@@ -1,0 +1,24 @@
+{% extends 'admin/base.html' %}
+{% block title %}Venues | PartyPilot Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading"><div><span class="admin-eyebrow">LISTING MANAGEMENT</span><h1>Venues</h1><p>Monitor venue listings published by restaurant partners.</p></div><span class="admin-chip">{{ venues|length }} listings</span></div>
+<section class="admin-card">
+    <form class="admin-toolbar" method="GET" action="{{ url_for('admin.venue_management') }}">
+        <input type="search" name="search" value="{{ search or '' }}" placeholder="Search venue or restaurant...">
+        <select name="status" onchange="this.form.submit()"><option value="">All listings</option><option value="published" {% if selected_status == 'published' %}selected{% endif %}>Published</option><option value="draft" {% if selected_status == 'draft' %}selected{% endif %}>Draft / Hidden</option></select>
+        <button type="submit" class="admin-btn">Filter</button>
+    </form>
+    <div class="admin-table-wrap"><table class="admin-table">
+        <thead><tr><th>Venue</th><th>Restaurant</th><th>Location</th><th>Capacity</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+        {% for venue in venues %}
+        <tr><td><strong>{{ venue.name }}</strong><small>{{ venue.venue_type or 'Venue' }}</small></td><td>{{ venue.restaurant.business_name }}</td><td>{{ venue.city }}{% if venue.state %}, {{ venue.state }}{% endif %}</td><td>{{ venue.max_capacity }}</td>
+            <td><span class="admin-status {{ 'confirmed' if venue.is_published else 'cancelled' }}">{{ 'Published' if venue.is_published else 'Hidden / Draft' }}</span></td>
+            <td><form action="{{ url_for('admin.update_venue_visibility', venue_id=venue.id) }}" method="POST">
+                {% if venue.is_published %}<button class="admin-table-action" name="action" value="hide" type="submit">Hide</button>{% else %}<button class="admin-table-action" name="action" value="publish" type="submit">Publish</button>{% endif %}
+            </form></td></tr>
+        {% else %}<tr><td colspan="6">No venues found.</td></tr>{% endfor %}
+        </tbody>
+    </table></div>
+</section>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'admin/base.html' %}
+{% block title %}Bookings | PartyPilot Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading"><div><span class="admin-eyebrow">BOOKING MANAGEMENT</span><h1>Bookings</h1><p>Monitor booking requests across PartyPilot.</p></div><span class="admin-chip">{{ bookings|length }} bookings</span></div>
+<section class="admin-card">
+    <form class="admin-toolbar" method="GET" action="{{ url_for('admin.bookings') }}"><select name="status" onchange="this.form.submit()"><option value="">All statuses</option>{% for status in ['pending','confirmed','rejected','cancelled','completed'] %}<option value="{{ status }}" {% if selected_status == status %}selected{% endif %}>{{ status|title }}</option>{% endfor %}</select></form>
+    <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Reference</th><th>Customer</th><th>Venue</th><th>Event date</th><th>Guests</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody>
+    {% for booking in bookings %}<tr><td>{{ booking.booking_reference }}</td><td>{{ booking.customer.full_name }}</td><td>{{ booking.venue.name }}</td><td>{{ booking.event_date.strftime('%d %b %Y') }}</td><td>{{ booking.guest_count }}</td><td>₹{{ "%.2f"|format(booking.total_amount or 0) }}</td><td><span class="admin-status {{ booking.status }}">{{ booking.status|title }}</span></td><td><a href="{{ url_for('admin.booking_details', booking_id=booking.id) }}">View ↗</a></td></tr>
+    {% else %}<tr><td colspan="8">No bookings found.</td></tr>{% endfor %}
+    </tbody></table></div>
+</section>
+{% endblock %}

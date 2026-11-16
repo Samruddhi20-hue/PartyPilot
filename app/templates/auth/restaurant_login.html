@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Partner Login | PartyPilot{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-page auth-page-centered">
+    <div class="auth-form-side">
+        <form class="auth-form" action="{{ url_for('auth.restaurant_login') }}" method="POST">
+            <a href="{{ url_for('home') }}" class="auth-back">← Back to home</a>
+            <div class="reset-icon">🍽️</div>
+            <span class="eyebrow">RESTAURANT PARTNER PORTAL</span>
+            <h2>Welcome back!</h2>
+            <p class="auth-subtitle">Login to manage your venue, bookings and events.</p>
+
+            <div class="auth-field">
+                <label for="partnerEmail">Business email</label>
+                <input id="partnerEmail" name="email" type="email" placeholder="business@example.com" required>
+            </div>
+
+            <div class="auth-field">
+                <label for="partnerPassword">Password</label>
+                <input id="partnerPassword" name="password" type="password" placeholder="Enter your password" required>
+            </div>
+
+            <div class="auth-options">
+                <label><input type="checkbox" name="remember"> Remember me</label>
+                <a href="{{ url_for('auth.forgot_password') }}">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary auth-submit">Login to dashboard ↗</button>
+            <p class="auth-switch">New to PartyPilot? <a href="{{ url_for('auth.restaurant_register') }}">Become a partner</a></p>
+        </form>
+    </div>
+</section>
+{% endblock %}

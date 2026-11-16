@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Booking Requests | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="restaurant-dashboard">
+    <div class="restaurant-welcome"><div><span class="eyebrow">CUSTOMER EVENTS</span><h1>Booking <span>requests.</span></h1><p>Review and manage requests for your venues.</p></div><a href="{{ url_for('restaurant.upcoming_events') }}" class="btn btn-primary">Upcoming Events ↗</a></div>
+    <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Reference</th><th>Customer</th><th>Venue</th><th>Date</th><th>Guests</th><th>Amount</th><th>Status</th><th></th></tr></thead><tbody>
+    {% for booking in bookings %}<tr><td>{{ booking.booking_reference }}</td><td>{{ booking.customer.full_name }}</td><td>{{ booking.venue.name }}</td><td>{{ booking.event_date.strftime('%d %b %Y') }}</td><td>{{ booking.guest_count }}</td><td>₹{{ "%.2f"|format(booking.total_amount or 0) }}</td><td><span class="booking-status {{ booking.status }}">{{ booking.status|title }}</span></td><td><a href="{{ url_for('restaurant.booking_details', booking_id=booking.id) }}" class="table-link">View ↗</a></td></tr>
+    {% else %}<tr><td colspan="8">No booking requests yet.</td></tr>{% endfor %}
+    </tbody></table></div>
+</section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'admin/base.html' %}
+{% block title %}Restaurants | PartyPilot Admin{% endblock %}
+{% block content %}
+<div class="admin-page-heading"><div><span class="admin-eyebrow">PARTNER MANAGEMENT</span><h1>Restaurants</h1><p>Review and manage restaurant partner applications.</p></div><span class="admin-chip">{{ restaurants|length }} partners</span></div>
+<section class="admin-card">
+    <form class="admin-toolbar" method="GET" action="{{ url_for('admin.restaurants') }}">
+        <select name="status" onchange="this.form.submit()"><option value="">All statuses</option>{% for status in ['pending','approved','rejected'] %}<option value="{{ status }}" {% if selected_status == status %}selected{% endif %}>{{ status|title }}</option>{% endfor %}</select>
+    </form>
+    <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Restaurant</th><th>Contact</th><th>Location</th><th>Applied</th><th>Venues</th><th>Status</th><th></th></tr></thead><tbody>
+    {% for restaurant in restaurants %}<tr><td><strong>{{ restaurant.business_name }}</strong></td><td>{{ restaurant.contact_email or restaurant.user.email }}<small>{{ restaurant.contact_phone or restaurant.user.phone or '' }}</small></td><td>{{ restaurant.city or restaurant.address or '—' }}</td><td>{{ restaurant.created_at.strftime('%d %b %Y') if restaurant.created_at else '—' }}</td><td>{{ restaurant.venues|length }}</td><td><span class="admin-status {{ restaurant.verification_status }}">{{ restaurant.verification_status|title }}</span></td><td><a href="{{ url_for('admin.restaurant_details', restaurant_id=restaurant.id) }}">Review ↗</a></td></tr>
+    {% else %}<tr><td colspan="7">No restaurant partners found.</td></tr>{% endfor %}
+    </tbody></table></div>
+</section>
+{% endblock %}

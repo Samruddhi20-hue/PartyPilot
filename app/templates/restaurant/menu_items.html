@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Menu Items | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="restaurant-dashboard">
+    <a href="{{ url_for('restaurant.menus') }}" class="back-link">← Back to menus</a>
+    <div class="restaurant-welcome"><div><span class="eyebrow">{{ menu.venue.name }}</span><h1>Manage <span>{{ menu.name }}.</span></h1><p>Add and manage the dishes available on this menu.</p></div></div>
+    <div class="food-editor">
+        <h2>Add a new dish</h2>
+        <form action="{{ url_for('restaurant.add_menu_item', menu_id=menu.id) }}" method="POST" class="food-editor-form">
+            <div class="form-grid">
+                <div class="form-field"><label for="foodName">Food item name</label><input id="foodName" name="name" type="text" maxlength="150" required></div>
+                <div class="form-field"><label for="foodCategory">Category</label><input id="foodCategory" name="category" type="text" required></div>
+                <div class="form-field"><label for="foodPrice">Price (₹)</label><input id="foodPrice" name="price" type="number" min="0" step="0.01" required></div>
+                <div class="form-field"><label for="foodDiet">Food preference</label><select id="foodDiet" name="dietary_type"><option value="veg">Vegetarian</option><option value="non-veg">Non-Vegetarian</option><option value="vegan">Vegan</option></select></div>
+                <div class="form-field full-field"><label for="foodDescription">Description</label><textarea id="foodDescription" name="description" rows="2"></textarea></div>
+            </div>
+            <div class="food-editor-actions"><button type="submit" class="btn btn-primary">Add item ↗</button></div>
+        </form>
+    </div>
+    <div class="menu-item-table-wrap"><table class="partner-table"><thead><tr><th>Food item</th><th>Category</th><th>Preference</th><th>Price</th><th>Status</th><th>Action</th></tr></thead><tbody>
+    {% for item in items %}<tr><td><strong>{{ item.name }}</strong><small>{{ item.description or '' }}</small></td><td>{{ item.category or '—' }}</td><td>{{ item.dietary_type|title }}</td><td>₹{{ "%.2f"|format(item.price) }}</td><td><span class="partner-status {{ 'published' if item.is_available else 'draft' }}">{{ 'Available' if item.is_available else 'Unavailable' }}</span></td><td><form action="{{ url_for('restaurant.toggle_menu_item', item_id=item.id) }}" method="POST"><button class="table-delete" type="submit">{{ 'Disable' if item.is_available else 'Enable' }}</button></form></td></tr>
+    {% else %}<tr><td colspan="6">No menu items yet.</td></tr>{% endfor %}
+    </tbody></table></div>
+</section>
+{% endblock %}

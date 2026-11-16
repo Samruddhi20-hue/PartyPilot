@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Partner Onboarding | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="partner-onboarding">
+    <div class="onboarding-header"><a href="{{ url_for('home') }}" class="logo">party<span>pilot.</span> ✦</a><span class="onboarding-step">PARTNER SETUP · 1 OF 1</span></div>
+    <div class="onboarding-content"><span class="eyebrow">LET'S GET YOU SET UP</span><h1>Tell us about your <span>restaurant.</span></h1><p>Complete your business details so customers can discover your venue.</p>
+        <form action="{{ url_for('restaurant.onboarding') }}" method="POST" class="partner-form">
+            <div class="partner-form-section"><h2>Business information</h2><div class="form-grid">
+                <div class="form-field"><label for="businessName">Restaurant / business name</label><input id="businessName" name="business_name" type="text" value="{{ profile.business_name }}" maxlength="180" required></div>
+                <div class="form-field"><label for="businessEmail">Business email</label><input id="businessEmail" name="business_email" type="email" value="{{ profile.contact_email or '' }}" required></div>
+                <div class="form-field"><label for="businessPhone">Business phone</label><input id="businessPhone" name="business_phone" type="tel" value="{{ profile.contact_phone or '' }}" required></div>
+            </div></div>
+            <div class="partner-form-section"><h2>Business location</h2><div class="form-grid">
+                <div class="form-field"><label for="businessCity">City</label><input id="businessCity" name="city" type="text" value="{{ profile.city or '' }}" required></div>
+                <div class="form-field"><label for="businessState">State</label><input id="businessState" name="state" type="text" value="{{ profile.state or '' }}"></div>
+                <div class="form-field"><label for="businessPincode">PIN code</label><input id="businessPincode" name="pincode" type="text" value="{{ profile.pincode or '' }}" maxlength="12"></div>
+                <div class="form-field full-field"><label for="businessAddress">Complete address</label><textarea id="businessAddress" name="address" rows="3" required>{{ profile.address or '' }}</textarea></div>
+            </div></div>
+            <div class="partner-form-section"><h2>About your business</h2><div class="form-field"><label for="businessDescription">Business description</label><textarea id="businessDescription" name="description" rows="4">{{ profile.description or '' }}</textarea></div></div>
+            <p>After completing your business profile, add individual venues with their capacity and pricing from your partner dashboard.</p>
+            <label class="form-checkbox"><input type="checkbox" required><span>I confirm that the business information provided is accurate.</span></label>
+            <button type="submit" class="btn btn-primary onboarding-submit">Complete setup ↗</button>
+        </form>
+    </div>
+</section>
+{% endblock %}

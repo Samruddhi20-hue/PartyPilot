@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Manage Menus | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="restaurant-dashboard">
+    <div class="restaurant-welcome"><div><span class="eyebrow">FOOD & DRINKS</span><h1>Your <span>menus.</span></h1><p>Organise your food options for corporate events and celebrations.</p></div><a href="{{ url_for('restaurant.add_menu') }}" class="btn btn-primary">+ Create menu</a></div>
+    <div class="venue-management-stats"><div><small>Total menus</small><strong>{{ menus|length }}</strong></div><div><small>Active menus</small><strong>{{ menus|selectattr('is_active')|list|length }}</strong></div><div><small>Total food items</small><strong>{{ menus|map(attribute='items')|map('length')|sum }}</strong></div></div>
+    <div class="partner-venue-grid">
+        {% for menu in menus %}
+        <article class="menu-management-card"><div class="menu-management-content">
+            <span class="partner-status {{ 'published' if menu.is_active else 'draft' }}">{{ 'Active' if menu.is_active else 'Inactive' }}</span>
+            <h2>{{ menu.name }}</h2><p>{{ menu.description or menu.venue.name }}</p>
+            <div class="menu-management-meta"><span>{{ menu.items|length }} food items</span><strong>{{ menu.venue.name }}</strong></div>
+            <a href="{{ url_for('restaurant.menu_items', menu_id=menu.id) }}" class="btn btn-primary">Manage items ↗</a>
+        </div></article>
+        {% else %}<div class="empty-state"><h2>No menus yet</h2><p>Create a menu for one of your venues.</p><a href="{{ url_for('restaurant.add_menu') }}" class="btn btn-primary">Create menu</a></div>{% endfor %}
+    </div>
+</section>
+{% endblock %}

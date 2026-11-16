@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Venue Photos | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="restaurant-dashboard">
+    <a href="{{ url_for('restaurant.venues') }}" class="back-link">← Back to my venues</a>
+    <div class="restaurant-welcome">
+        <div><span class="eyebrow">MAKE YOUR VENUE STAND OUT</span><h1>Venue <span>photos.</span></h1><p>Upload and manage photographs for {{ venue.name }}.</p></div>
+    </div>
+    <div class="partner-form photo-manager">
+        <div class="photo-manager-heading">
+            <div><h2>{{ venue.name }}</h2><p>Manage your venue gallery.</p></div>
+            <span class="partner-status {{ 'published' if venue.is_published else 'pending' }}">{{ 'Published listing' if venue.is_published else 'Draft listing' }}</span>
+        </div>
+        <form class="photo-upload-area" action="{{ url_for('restaurant.upload_venue_photos', venue_id=venue.id) }}" method="POST" enctype="multipart/form-data">
+            <span>📸</span><h3>Add venue photos</h3>
+            <p>Upload JPG, PNG or WEBP images. Maximum 8 MB per image, up to four images per upload.</p>
+            <input id="venuePhotoUpload" name="photos" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" multiple required>
+            <button class="btn btn-primary" type="submit">Upload photos ↗</button>
+        </form>
+        <div class="photo-gallery-heading"><h3>Your gallery</h3><span>{{ photos|length }} photo(s)</span></div>
+        <div class="partner-photo-grid" id="partnerPhotoGrid">
+            {% for photo in photos %}
+            <div class="partner-photo-card">
+                <img src="{{ photo.image_path }}" alt="{{ venue.name }} photo" loading="lazy">
+                {% if photo.is_primary %}<span class="photo-cover-label">Cover photo</span>{% else %}
+                <form action="{{ url_for('restaurant.set_primary_venue_photo', venue_id=venue.id, photo_id=photo.id) }}" method="POST"><button type="submit" class="btn btn-outline">Set as cover</button></form>{% endif %}
+                <form action="{{ url_for('restaurant.delete_venue_photo', venue_id=venue.id, photo_id=photo.id) }}" method="POST" onsubmit="return confirm('Delete this venue photo?')"><button type="submit" class="photo-delete" aria-label="Remove photo">×</button></form>
+            </div>
+            {% else %}<p>No photos uploaded yet. Add your first venue photo above.</p>{% endfor %}
+        </div>
+        <div class="partner-form-footer"><p>Use clear, well-lit photographs to make your listing attractive.</p><a href="{{ url_for('restaurant.venues') }}" class="btn btn-primary">Done ↗</a></div>
+    </div>
+</section>
+{% endblock %}

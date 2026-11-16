@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %}Event Packages | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="restaurant-dashboard">
+    <div class="restaurant-welcome"><div><span class="eyebrow">CREATE EXPERIENCES</span><h1>Event <span>packages.</span></h1><p>Offer customers ready-made packages for their celebrations.</p></div><a href="{{ url_for('restaurant.add_package') }}" class="btn btn-primary">+ Create package</a></div>
+    <div class="venue-management-stats"><div><small>Total packages</small><strong>{{ packages|length }}</strong></div><div><small>Active packages</small><strong>{{ packages|selectattr('is_active')|list|length }}</strong></div><div><small>Starting price</small><strong>{% if packages %}₹{{ "%.2f"|format(packages|map(attribute='price_per_person')|min) }}{% else %}—{% endif %}</strong></div></div>
+    <div class="partner-package-grid">
+        {% for package in packages %}
+        <article class="partner-package-card"><div class="package-card-top"><span>✨</span><span class="partner-status {{ 'published' if package.is_active else 'draft' }}">{{ 'Active' if package.is_active else 'Inactive' }}</span></div>
+            <span class="eyebrow">{{ package.venue.name }}</span><h2>{{ package.name }}</h2><p>{{ package.description or package.inclusions or 'Package details' }}</p>
+            <strong class="partner-package-price">₹{{ "%.2f"|format(package.price_per_person) }} <small>/ person</small></strong>
+            {% if package.min_guests or package.max_guests %}<p>Guests: {{ package.min_guests or 1 }}{% if package.max_guests %}–{{ package.max_guests }}{% else %}+{% endif %}</p>{% endif %}
+            <div class="partner-package-actions">
+                <a href="{{ url_for('restaurant.edit_package', package_id=package.id) }}" class="btn btn-primary">Edit package</a>
+                <form action="{{ url_for('restaurant.toggle_package', package_id=package.id) }}" method="POST"><button type="submit" class="btn btn-outline">{{ 'Deactivate' if package.is_active else 'Activate' }}</button></form>
+            </div>
+        </article>
+        {% else %}<div class="empty-state"><h2>No packages yet</h2><p>Create your first event package.</p><a href="{{ url_for('restaurant.add_package') }}" class="btn btn-primary">Create package</a></div>{% endfor %}
+    </div>
+</section>
+{% endblock %}

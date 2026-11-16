@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin | PartyPilot{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="admin-body">
+<div class="admin-layout">
+    <aside class="admin-sidebar" id="adminSidebar">
+        <a href="{{ url_for('admin.dashboard') }}" class="admin-logo">party<span>pilot.</span> ✦</a>
+        <p class="sidebar-label">WORKSPACE</p>
+        <nav class="admin-nav">
+            <a href="{{ url_for('admin.dashboard') }}" class="{% if request.path == '/admin' %}active{% endif %}">▦ <span>Dashboard</span></a>
+            <a href="{{ url_for('admin.customers') }}" class="{% if '/customers' in request.path %}active{% endif %}">♙ <span>Customers</span></a>
+            <a href="{{ url_for('admin.restaurants') }}" class="{% if '/restaurants' in request.path %}active{% endif %}">♧ <span>Restaurants</span></a>
+            <a href="{{ url_for('admin.venue_management') }}" class="{% if '/venues' in request.path %}active{% endif %}">⌂ <span>Venues</span></a>
+            <a href="{{ url_for('admin.bookings') }}" class="{% if '/bookings' in request.path %}active{% endif %}">▤ <span>Bookings</span></a>
+            <a href="{{ url_for('admin.reports') }}" class="{% if '/reports' in request.path %}active{% endif %}">▥ <span>Reports</span></a>
+        </nav>
+        <p class="sidebar-label">PREFERENCES</p>
+        <nav class="admin-nav">
+            <a href="{{ url_for('admin.settings') }}" class="{% if '/settings' in request.path %}active{% endif %}">⚙ <span>Settings</span></a>
+            <a href="{{ url_for('home') }}"><span>↗</span> <span>View Website</span></a>
+        </nav>
+        <div class="admin-sidebar-bottom">
+            <div class="admin-avatar">AD</div><div><strong>{{ admin_user.full_name if admin_user is defined else current_user.full_name }}</strong><small>Platform Manager</small></div>
+            <form action="{{ url_for('auth.logout') }}" method="POST"><button type="submit" title="Log out">↪</button></form>
+        </div>
+    </aside>
+    <main class="admin-main">
+        <header class="admin-topbar"><button class="admin-menu-toggle" id="adminMenuToggle" aria-label="Open menu">☰</button>
+            <div><span class="admin-top-label">PARTYPILOT / ADMIN</span><p>Platform management</p></div>
+            <div class="admin-top-right"><span class="admin-live-dot"></span><span>Admin workspace</span></div>
+        </header>
+        <div class="admin-content">{% block content %}{% endblock %}</div>
+    </main>
+</div>
+<script>
+(function(){const token={{ csrf_token()|tojson }};document.querySelectorAll('form').forEach(f=>{if((f.method||'GET').toUpperCase()!=='GET'&&!f.querySelector('[name="_csrf_token"]')){const i=document.createElement('input');i.type='hidden';i.name='_csrf_token';i.value=token;f.appendChild(i);}});})();
+</script>
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% block extra_js %}{% endblock %}
+</body></html>

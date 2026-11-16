@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Event Packages | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">{% endblock %}
+{% block content %}
+<section class="booking-page">
+    <div class="booking-intro">
+        <a href="{{ url_for('customer.venue_menu', venue_id=venue.id) }}" class="back-link">← Back to menu</a>
+        <span class="eyebrow">STEP 2 OF 3</span>
+        <h1>Pick your <span>event package.</span></h1>
+        <p>Available packages at {{ venue.name }}.</p>
+    </div>
+    {% if packages %}
+    <div class="package-grid">
+        {% for package in packages %}
+        <label class="package-card">
+            <input type="radio" name="eventPackage" value="{{ package.id }}" data-name="{{ package.name }}" data-price="{{ package.price_per_person }}">
+            <div class="package-top"><span>✨</span><span class="package-label">{{ 'AVAILABLE PACKAGE' }}</span></div>
+            <h2>{{ package.name }}</h2>
+            <p>{{ package.description or package.inclusions or 'Package details available from the venue.' }}</p>
+            <strong class="package-price">₹{{ "%.2f"|format(package.price_per_person) }} <small>/ person</small></strong>
+            {% if package.min_guests or package.max_guests %}
+            <small>Guests: {{ package.min_guests or 1 }}{% if package.max_guests %}–{{ package.max_guests }}{% else %}+{% endif %}</small>
+            {% endif %}
+            <span class="package-select">Select package</span>
+        </label>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><h2>No active packages yet</h2><p>You can continue without selecting a package.</p></div>
+    {% endif %}
+    <div class="package-bottom">
+        <div><span class="eyebrow">YOUR PACKAGE</span><h3 id="chosenPackage">No package selected</h3><p id="packagePrice">Choose a package or continue without one.</p></div>
+        <a href="{{ url_for('bookings.create_booking', venue_id=venue.id) }}" class="btn btn-primary" id="continuePackage">Continue to event details ↗</a>
+    </div>
+</section>
+{% endblock %}
+{% block extra_js %}<script src="{{ url_for('static', filename='js/menu.js') }}"></script>{% endblock %}

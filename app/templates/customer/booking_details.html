@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}Booking {{ booking.booking_reference }} | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">{% endblock %}
+{% block content %}
+<section class="customer-dashboard-page">
+    <a href="{{ url_for('customer.my_bookings') }}" class="back-link">← Back to my bookings</a>
+    <div class="booking-detail-header"><div><span class="eyebrow">BOOKING DETAILS</span><h1>{{ booking.event_name or booking.event_type }}</h1><p>Booking reference: {{ booking.booking_reference }}</p></div><span class="booking-status {{ booking.status }}">{{ booking.status|title }}</span></div>
+    <div class="booking-detail-layout">
+        <div class="booking-detail-main">
+            <div class="review-card"><div class="review-venue">
+                {% set primary = namespace(path='') %}{% for image in booking.venue.images %}{% if image.is_primary and not primary.path %}{% set primary.path = image.image_path %}{% endif %}{% endfor %}
+                {% if not primary.path and booking.venue.images %}{% set primary.path = booking.venue.images[0].image_path %}{% endif %}
+                <img src="{{ primary.path or url_for('static', filename='images/venue-placeholder.svg') }}" alt="{{ booking.venue.name }}">
+                <div><h3>{{ booking.venue.name }}</h3><p>📍 {{ booking.venue.city }}{% if booking.venue.state %}, {{ booking.venue.state }}{% endif %}</p><span>{{ booking.venue.venue_type or 'Event venue' }}</span></div>
+            </div><a class="text-link" href="{{ url_for('customer.venue_details', venue_id=booking.venue.id) }}">View venue details ↗</a></div>
+            <div class="review-card"><h2>Event information</h2><div class="review-detail-grid">
+                <div><small>Event type</small><strong>{{ booking.event_type }}</strong></div><div><small>Event date</small><strong>{{ booking.event_date.strftime('%d %B %Y') }}</strong></div>
+                <div><small>Start time</small><strong>{{ booking.start_time.strftime('%I:%M %p') if booking.start_time else '—' }}</strong></div><div><small>Duration</small><strong>{{ booking.duration or '—' }}</strong></div>
+                <div><small>Guests</small><strong>{{ booking.guest_count }}</strong></div><div><small>Package</small><strong>{{ booking.package.name if booking.package else 'No package selected' }}</strong></div>
+            </div></div>
+            <div class="review-card"><h2>Organiser information</h2><div class="review-detail-grid">
+                <div><small>Organiser</small><strong>{{ booking.organiser_name or booking.customer.full_name }}</strong></div><div><small>Company</small><strong>{{ booking.company_name or '—' }}</strong></div>
+                <div><small>Email</small><strong>{{ booking.contact_email or booking.customer.email }}</strong></div><div><small>Phone</small><strong>{{ booking.contact_phone or booking.customer.phone or '—' }}</strong></div>
+            </div><div class="review-notes"><small>Special requests</small><p>{{ booking.special_requests or 'None' }}</p></div></div>
+        </div>
+        <aside class="booking-sidebar"><span class="eyebrow">COST OVERVIEW</span><h2>₹{{ "%.2f"|format(booking.total_amount or 0) }}</h2><p>Booking estimate</p><div class="sidebar-divider"></div>
+            <div class="sidebar-row"><span>Guests</span><strong>{{ booking.guest_count }}</strong></div><div class="sidebar-row"><span>Package</span><strong>{{ booking.package.name if booking.package else 'None' }}</strong></div>
+            <div class="sidebar-divider"></div><p class="cost-disclaimer">No payment has been collected. This request is awaiting the venue's response where applicable.</p>
+            {% if booking.status == 'pending' %}<form action="{{ url_for('bookings.cancel_booking', booking_id=booking.id) }}" method="POST" onsubmit="return confirm('Cancel this booking request?')"><button type="submit" class="btn btn-outline sidebar-button">Cancel request</button></form>{% endif %}
+        </aside>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block title %}Upcoming Events | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="restaurant-dashboard">
+    <div class="restaurant-welcome"><div><span class="eyebrow">CONFIRMED BOOKINGS</span><h1>Upcoming <span>events.</span></h1><p>Events confirmed at your venues.</p></div><a href="{{ url_for('restaurant.availability') }}" class="btn btn-primary">Manage Availability ↗</a></div>
+    <div class="admin-table-wrap"><table class="admin-table"><thead><tr><th>Date</th><th>Event</th><th>Customer</th><th>Venue</th><th>Time</th><th>Guests</th><th></th></tr></thead><tbody>
+    {% for booking in events %}<tr><td>{{ booking.event_date.strftime('%d %b %Y') }}</td><td>{{ booking.event_name or booking.event_type }}</td><td>{{ booking.customer.full_name }}</td><td>{{ booking.venue.name }}</td><td>{{ booking.start_time.strftime('%I:%M %p') if booking.start_time else '—' }}</td><td>{{ booking.guest_count }}</td><td><a href="{{ url_for('restaurant.booking_details', booking_id=booking.id) }}">Details ↗</a></td></tr>
+    {% else %}<tr><td colspan="7">No upcoming confirmed events.</td></tr>{% endfor %}
+    </tbody></table></div>
+</section>
+{% endblock %}

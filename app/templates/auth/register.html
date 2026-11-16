@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Create Account | PartyPilot{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+    <div class="auth-visual">
+        <span class="eyebrow">✦ LET'S MAKE IT HAPPEN</span>
+        <h1>Plan less.<br>Celebrate <span>more.</span></h1>
+        <p>Create your PartyPilot account and discover spaces made for unforgettable team moments.</p>
+        <div class="auth-visual-art">🎈 🎊 🍰</div>
+        <small>ONE ACCOUNT. ENDLESS POSSIBILITIES.</small>
+    </div>
+
+    <div class="auth-form-side">
+        <form class="auth-form" action="{{ url_for('auth.register') }}" method="POST">
+            <a href="{{ url_for('home') }}" class="auth-back">← Back to home</a>
+            <span class="eyebrow">JOIN THE PARTY</span>
+            <h2>Create your account</h2>
+            <p class="auth-subtitle">First, tell us how you'd like to use PartyPilot.</p>
+
+            <div class="account-type-options">
+                <label class="account-type-card">
+                    <input type="radio" name="account_type" value="customer" checked>
+                    <span>🎉</span>
+                    <strong>I'm planning events</strong>
+                    <small>Discover venues and book events</small>
+                </label>
+                <label class="account-type-card">
+                    <input type="radio" name="account_type" value="restaurant">
+                    <span>🍽️</span>
+                    <strong>I'm a restaurant</strong>
+                    <small>List my venue and receive bookings</small>
+                </label>
+            </div>
+
+            <div class="auth-field">
+                <label for="fullName">Full name</label>
+                <input id="fullName" name="name" type="text" placeholder="Your full name" required>
+            </div>
+
+            <div class="auth-field">
+                <label for="registerEmail">Email address</label>
+                <input id="registerEmail" name="email" type="email" placeholder="you@example.com" required>
+            </div>
+
+            <div class="auth-field">
+                <label for="registerPassword">Create password</label>
+                <input id="registerPassword" name="password" type="password" minlength="8" placeholder="At least 8 characters" required>
+            </div>
+
+            <label class="auth-terms">
+                <input type="checkbox" required>
+                <span>I agree to the terms and privacy policy.</span>
+            </label>
+
+            <button type="submit" class="btn btn-primary auth-submit">Create account ↗</button>
+            <p class="auth-switch">Already have an account? <a href="{{ url_for('auth.login') }}">Login</a></p>
+        </form>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}My Bookings | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}">{% endblock %}
+{% block content %}
+<section class="customer-dashboard">
+    <div class="dashboard-welcome"><div><span class="eyebrow">YOUR EVENT HISTORY</span><h1>My <span>bookings.</span></h1><p>Track every event request and confirmation.</p></div><a href="{{ url_for('venues.explore') }}" class="btn btn-primary">+ Plan an event</a></div>
+    <div class="booking-tabs">
+        <a class="booking-tab {{ 'active' if not selected_status else '' }}" href="{{ url_for('customer.my_bookings') }}">All</a>
+        {% for status in ['pending','confirmed','rejected','cancelled','completed'] %}
+        <a class="booking-tab {{ 'active' if selected_status == status else '' }}" href="{{ url_for('customer.my_bookings', status=status) }}">{{ status|title }}</a>
+        {% endfor %}
+    </div>
+    <div class="booking-list">
+        {% for booking in bookings %}
+        <article class="my-booking-card" data-status="{{ booking.status }}">
+            <div><span class="eyebrow">{{ booking.booking_reference }}</span><h2>{{ booking.venue.name }}</h2><p>{{ booking.event_type }} · {{ booking.event_date.strftime('%d %b %Y') }} · {{ booking.guest_count }} guests</p><small>{{ booking.venue.city }}</small></div>
+            <div><strong>₹{{ "%.2f"|format(booking.total_amount or 0) }}</strong><span class="booking-status {{ booking.status }}">{{ booking.status|title }}</span></div>
+            <a href="{{ url_for('customer.booking_details', booking_id=booking.id) }}" class="text-link">View details ↗</a>
+        </article>
+        {% else %}<div class="empty-results"><h3>No bookings found</h3><p>When you request a venue, it will appear here.</p><a href="{{ url_for('venues.explore') }}" class="btn btn-primary">Explore venues</a></div>{% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,137 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Login | PartyPilot{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<section class="auth-page">
+
+    <!-- Left Visual Section -->
+    <div class="auth-visual">
+
+        <span class="eyebrow">✦ YOUR NEXT EVENT AWAITS</span>
+
+        <h1>
+            Good times<br>
+            start with a<br>
+            <span>great plan.</span>
+        </h1>
+
+        <p>
+            Find amazing venues, plan team celebrations
+            and manage every event in one place.
+        </p>
+
+        <div class="auth-visual-art">
+            🎉 ✨ 🥂
+        </div>
+
+        <small>YOUR EVENT. YOUR VIBE. YOUR VENUE.</small>
+
+    </div>
+
+
+    <!-- Right Login Form -->
+    <div class="auth-form-side">
+
+        <form class="auth-form"
+              action="{{ url_for('auth.login') }}"
+              method="POST">
+
+            <a href="{{ url_for('home') }}" class="auth-back">
+                ← Back to home
+            </a>
+
+            <span class="eyebrow">WELCOME BACK</span>
+
+            <h2>Login to PartyPilot</h2>
+
+            <p class="auth-subtitle">
+                Your next great event starts here.
+                Login to continue.
+            </p>
+
+
+            <!-- Email -->
+            <div class="auth-field">
+
+                <label for="email">Email address</label>
+
+                <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Password -->
+            <div class="auth-field">
+
+                <label for="password">Password</label>
+
+                <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    autocomplete="current-password"
+                    required
+                >
+
+            </div>
+
+
+            <!-- Login Options -->
+            <div class="auth-options">
+
+                <label>
+                    <input type="checkbox" name="remember" value="1">
+                    Remember me
+                </label>
+
+                <a href="{{ url_for('auth.forgot_password') }}">
+                    Forgot password?
+                </a>
+
+            </div>
+
+
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary auth-submit">
+                Login to your account →
+            </button>
+
+
+            <!-- Registration -->
+            <p class="auth-switch">
+                Don't have an account?
+                <a href="{{ url_for('auth.register') }}">
+                    Create an account
+                </a>
+            </p>
+
+
+            <p class="auth-switch">
+                Are you a restaurant partner?
+                <a href="{{ url_for('auth.restaurant_login') }}">
+                    Partner login
+                </a>
+            </p>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

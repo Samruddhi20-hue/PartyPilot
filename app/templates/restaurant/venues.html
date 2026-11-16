@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}My Venues | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="restaurant-dashboard">
+    <div class="restaurant-welcome"><div><span class="eyebrow">YOUR LISTINGS</span><h1>My venues<span>.</span></h1><p>Manage your spaces and how customers discover them.</p></div>
+        <a href="{{ url_for('restaurant.add_venue') }}" class="btn btn-primary">+ Add venue</a></div>
+    <div class="venue-management-stats">
+        <div><small>Total venues</small><strong>{{ venues|length }}</strong></div>
+        <div><small>Published</small><strong>{{ venues|selectattr('is_published')|list|length }}</strong></div>
+        <div><small>Drafts</small><strong>{{ venues|rejectattr('is_published')|list|length }}</strong></div>
+    </div>
+    <div class="partner-venue-grid">
+        {% for venue in venues %}
+        <article class="partner-venue-card">
+            <div class="partner-venue-image">
+                {% set primary = namespace(path='') %}
+                {% for image in venue.images %}{% if image.is_primary and not primary.path %}{% set primary.path = image.image_path %}{% endif %}{% endfor %}
+                {% if not primary.path and venue.images %}{% set primary.path = venue.images[0].image_path %}{% endif %}
+                <img src="{{ primary.path or url_for('static', filename='images/venue-placeholder.svg') }}" alt="{{ venue.name }}">
+                <span class="partner-status {{ 'published' if venue.is_published else 'pending' }}">{{ 'Published' if venue.is_published else venue.status|title }}</span>
+            </div>
+            <div class="partner-venue-content">
+                <div class="partner-venue-title"><h2>{{ venue.name }}</h2></div>
+                <p>📍 {{ venue.city }}{% if venue.state %}, {{ venue.state }}{% endif %}</p>
+                <div class="partner-venue-meta"><span>👥 {{ venue.max_capacity }} guests</span><strong>₹{{ "%.2f"|format(venue.price_per_person or 0) }} / person</strong></div>
+                <div class="partner-venue-actions">
+                    <a href="{{ url_for('restaurant.edit_venue', venue_id=venue.id) }}" class="btn btn-primary">Edit venue</a>
+                    <a href="{{ url_for('restaurant.venue_photos', venue_id=venue.id) }}" class="btn btn-outline">Photos</a>
+                </div>
+            </div>
+        </article>
+        {% else %}<div class="empty-state"><h2>No venues yet</h2><p>Add your first venue to start building your listing.</p><a href="{{ url_for('restaurant.add_venue') }}" class="btn btn-primary">Add venue</a></div>{% endfor %}
+    </div>
+</section>
+{% endblock %}

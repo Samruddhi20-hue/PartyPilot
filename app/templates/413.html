@@ -1,0 +1,3 @@
+{% extends 'base.html' %}
+{% block title %}Upload Too Large | PartyPilot{% endblock %}
+{% block content %}<section class="error-page"><h1>That upload is too large</h1><p>Please reduce the file size and try again. Venue images must be 8 MB or smaller each.</p><a href="{{ url_for('home') }}" class="btn btn-primary">Back to home</a></section>{% endblock %}

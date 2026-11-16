@@ -1,0 +1,33 @@
+{% extends 'admin/base.html' %}
+{% block title %}Booking {{ booking.booking_reference }} | PartyPilot Admin{% endblock %}
+{% block content %}
+<a href="{{ url_for('admin.bookings') }}" class="admin-back-link">← Back to bookings</a>
+<div class="admin-page-heading"><div><span class="admin-eyebrow">BOOKING DETAILS</span><h1>{{ booking.booking_reference }}</h1><p>{{ booking.venue.name }} · {{ booking.event_date.strftime('%d %b %Y') }}</p></div><span class="admin-status {{ booking.status }}">{{ booking.status|title }}</span></div>
+<div class="admin-detail-grid">
+    <section class="admin-card"><h2>Event information</h2><div class="admin-detail-list">
+        <div><span>Event</span><strong>{{ booking.event_name or booking.event_type }}</strong></div>
+        <div><span>Type</span><strong>{{ booking.event_type }}</strong></div>
+        <div><span>Date</span><strong>{{ booking.event_date.strftime('%d %b %Y') }}</strong></div>
+        <div><span>Time</span><strong>{{ booking.start_time.strftime('%I:%M %p') if booking.start_time else '—' }}</strong></div>
+        <div><span>Duration</span><strong>{{ booking.duration or '—' }}</strong></div>
+        <div><span>Guests</span><strong>{{ booking.guest_count }}</strong></div>
+        <div><span>Customer</span><strong>{{ booking.customer.full_name }}</strong></div>
+        <div><span>Email</span><strong>{{ booking.contact_email or booking.customer.email }}</strong></div>
+        <div><span>Phone</span><strong>{{ booking.contact_phone or booking.customer.phone or '—' }}</strong></div>
+        <div><span>Company</span><strong>{{ booking.company_name or '—' }}</strong></div>
+        <div><span>Total</span><strong>₹{{ "%.2f"|format(booking.total_amount or 0) }}</strong></div>
+        <div><span>Special requests</span><strong>{{ booking.special_requests or 'None' }}</strong></div>
+    </div></section>
+    <section class="admin-card"><h2>Update status</h2>
+        <form action="{{ url_for('admin.update_booking_status', booking_id=booking.id) }}" method="POST" class="admin-action-stack">
+            {% if booking.status == 'pending' %}
+            <button class="admin-btn admin-btn-primary" name="status" value="confirmed" type="submit">Confirm booking</button>
+            <button class="admin-btn admin-btn-danger" name="status" value="rejected" type="submit">Reject booking</button>
+            {% elif booking.status == 'confirmed' %}
+            <button class="admin-btn admin-btn-primary" name="status" value="completed" type="submit">Mark completed</button>
+            <button class="admin-btn admin-btn-danger" name="status" value="cancelled" type="submit">Cancel booking</button>
+            {% else %}<p>No further status actions are available.</p>{% endif %}
+        </form>
+    </section>
+</div>
+{% endblock %}

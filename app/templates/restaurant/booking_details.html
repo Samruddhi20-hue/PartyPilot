@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Booking {{ booking.booking_reference }} | PartyPilot{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{{ url_for('static', filename='css/restaurant.css') }}">{% endblock %}
+{% block content %}
+<section class="restaurant-dashboard">
+    <a href="{{ url_for('restaurant.booking_requests') }}" class="back-link">← Back to booking requests</a>
+    <div class="restaurant-welcome"><div><span class="eyebrow">BOOKING REQUEST</span><h1>{{ booking.booking_reference }}</h1><p>{{ booking.venue.name }} · {{ booking.event_date.strftime('%d %b %Y') }}</p></div><span class="partner-status {{ booking.status }}">{{ booking.status|title }}</span></div>
+    <div class="partner-card"><h2>Event details</h2><div class="review-detail-grid">
+        <div><small>Event name</small><strong>{{ booking.event_name or booking.event_type }}</strong></div><div><small>Event type</small><strong>{{ booking.event_type }}</strong></div>
+        <div><small>Date</small><strong>{{ booking.event_date.strftime('%d %b %Y') }}</strong></div><div><small>Time</small><strong>{{ booking.start_time.strftime('%I:%M %p') if booking.start_time else '—' }}</strong></div>
+        <div><small>Duration</small><strong>{{ booking.duration or '—' }}</strong></div><div><small>Guests</small><strong>{{ booking.guest_count }}</strong></div>
+        <div><small>Customer</small><strong>{{ booking.customer.full_name }}</strong></div><div><small>Company</small><strong>{{ booking.company_name or '—' }}</strong></div>
+        <div><small>Email</small><strong>{{ booking.contact_email or booking.customer.email }}</strong></div><div><small>Phone</small><strong>{{ booking.contact_phone or booking.customer.phone or '—' }}</strong></div>
+        <div><small>Package</small><strong>{{ booking.package.name if booking.package else 'None' }}</strong></div><div><small>Total</small><strong>₹{{ "%.2f"|format(booking.total_amount or 0) }}</strong></div>
+    </div><div class="review-notes"><small>Special requests</small><p>{{ booking.special_requests or 'None' }}</p></div>
+    {% if booking.status == 'pending' %}<form action="{{ url_for('restaurant.update_booking_status', booking_id=booking.id) }}" method="POST" class="partner-form-buttons"><button type="submit" name="status" value="confirmed" class="btn btn-primary">Accept request</button><button type="submit" name="status" value="rejected" class="btn btn-outline">Decline request</button></form>
+    {% elif booking.status == 'confirmed' %}<form action="{{ url_for('restaurant.update_booking_status', booking_id=booking.id) }}" method="POST"><button type="submit" name="status" value="completed" class="btn btn-primary">Mark event completed</button></form>{% endif %}
+    </div>
+</section>
+{% endblock %}
